@@ -1,0 +1,99 @@
+#:kivy 1.7.2
+
+
+<DigitalClock>:
+    Label:
+        id: clock_time
+        text: self.parent.display_time
+        font_size: 100
+        # opacity: 0s
+        size_hint_y: 1
+
+    Label:
+        id: alarm_time
+        text: "Alarm Time"
+        font_size: 100
+        # opacity: 0s
+        size_hint_y: 5
+
+    Label:
+        text: "am"
+        font_size: 50
+        size_hint_y: 1
+        pos_hint: {'x': 0, 'y': .7}
+
+
+    Button:
+        text: "Settings"
+        font_size: 10
+        size_hint: .1, .1
+        pos_hint: {'x': 0, 'y': .9}
+
+    Button:
+        id: active
+        text: "Alarm"
+        font_size: 10
+        size_hint: .1, .1
+        pos_hint: {'x': .9, 'y': .9}
+        background_color: 0, 0, 0 ,0
+
+    Button:
+        id: hour10_up
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .3, 'y': .6}
+
+    Button:
+        id: hour1_up
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .38, 'y': .6}
+
+    Button:
+        id: min10_up
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .54, 'y': .6}
+
+    Button:
+        id: min1_up
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .62, 'y': .6}
+
+    Button:
+        id: hour10_dn
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .3, 'y': .3}
+
+
+    Button:
+        id: hour1_dn
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .38, 'y': .3}
+
+
+    Button:
+        id: min10_dn
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .54, 'y': .3}
+
+
+    Button:
+        id: min1_dn
+        text: "^"
+        font_size: 10
+        size_hint: .08, .1
+        pos_hint: {'x': .62, 'y': .3}
+
+
