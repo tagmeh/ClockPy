@@ -2,98 +2,132 @@
 
 
 <DigitalClock>:
+    id: clock
+
     Label:
-        id: clock_time
+        id: 'clock_time'
         text: self.parent.display_time
         font_size: 100
         # opacity: 0s
         size_hint_y: 1
 
     Label:
-        id: alarm_time
+        name: "time_ampm"
+        text: "pm"
+        font_size: 30
+        size_hint_y: 1
+        pos_hint: {'x': .24, 'y': -.04}
+
+    Label:
+        id: 'alarm_time'
         text: "Alarm Time"
         font_size: 100
-        # opacity: 0s
+        # opacity: 0
         size_hint_y: 5
 
     Label:
-        text: "am"
-        font_size: 50
+        name: "alarm_ampm"
+        text: "pm"
+        font_size: 30
         size_hint_y: 1
-        pos_hint: {'x': 0, 'y': .7}
+        pos_hint: {'x': .24, 'y': -.04}
 
+    ToggleButton:
+        # opacity: 0
+        size_hint: .1, .1
+        pos_hint: {'x': .24, 'y': -.04}
+        on_state: root.alarm_ampm(*args)
 
-    Button:
+    Label:
+        text: "Alarm"
+        font_size: 25
+        pos_hint: {'x': .45, 'y': .48}
+
+    ToggleButton:
+        id: 'button_settings'
         text: "Settings"
         font_size: 10
         size_hint: .1, .1
         pos_hint: {'x': 0, 'y': .9}
+        on_state: root.click_settings(*args)
 
-    Button:
-        id: active
-        text: "Alarm"
+    Switch:                                 #Alarm On/Off Switch
+        id: 'button_active'                 #
         font_size: 10
         size_hint: .1, .1
-        pos_hint: {'x': .9, 'y': .9}
+        pos_hint: {'x': .9, 'y': .89}        #
         background_color: 0, 0, 0 ,0
+        on_active: root.switch_state(*args)
 
     Button:
-        id: hour10_up
-        text: "^"
+        id: 'hour10_up'
+        text: "+"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .3, 'y': .6}
+        on_release: root.hour10_up()
 
     Button:
-        id: hour1_up
-        text: "^"
+        id: 'hour1_up'
+        name: 'hour1_up'
+        text: "+"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .38, 'y': .6}
+        on_release: root.hour1_up()
 
     Button:
-        id: min10_up
-        text: "^"
+        id: 'min10_up'
+        text: "+"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .54, 'y': .6}
+        on_release: root.min10_up()
 
     Button:
-        id: min1_up
-        text: "^"
+        id: 'min1_up'
+        text: "+"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .62, 'y': .6}
+        on_release: root.min1_up()
 
     Button:
-        id: hour10_dn
-        text: "^"
+        id: 'hour10_dn'
+        text: "-"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .3, 'y': .3}
-
+        on_release: root.hour10_dn()
 
     Button:
-        id: hour1_dn
-        text: "^"
+        id: 'hour1_dn'
+        text: "-"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .38, 'y': .3}
-
+        on_release: root.hour1_dn()
 
     Button:
-        id: min10_dn
-        text: "^"
+        id: 'min10_dn'
+        text: "-"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .54, 'y': .3}
-
+        on_release: root.min10_dn()
 
     Button:
-        id: min1_dn
-        text: "^"
+        id: 'min1_dn'
+        text: "-"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .62, 'y': .3}
+        on_release: root.min1_dn()
 
+    Button:
+        text: "Set"
+        size_hint: .1, .1
+        pos_hint: {'x': .24, 'y': -.04}
+        on_release:
+            self.text = 'Alarm Set'
 
