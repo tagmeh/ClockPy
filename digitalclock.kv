@@ -8,35 +8,18 @@
         id: 'clock_time'
         text: self.parent.display_time
         font_size: 100
-        # opacity: 0s
+        opacity: self.parent.clock_view
+        disabled: self.parent.clock_disable
         size_hint_y: 1
 
-    Label:
-        name: "time_ampm"
-        text: "pm"
-        font_size: 30
-        size_hint_y: 1
-        pos_hint: {'x': .24, 'y': -.04}
 
     Label:
         id: 'alarm_time'
+        opacity: self.parent.settings_view
         text: "Alarm Time"
         font_size: 100
-        # opacity: 0
-        size_hint_y: 5
-
-    Label:
-        name: "alarm_ampm"
-        text: "pm"
-        font_size: 30
         size_hint_y: 1
-        pos_hint: {'x': .24, 'y': -.04}
 
-    ToggleButton:
-        # opacity: 0
-        size_hint: .1, .1
-        pos_hint: {'x': .24, 'y': -.04}
-        on_state: root.alarm_ampm(*args)
 
     Label:
         text: "Alarm"
@@ -51,6 +34,7 @@
         pos_hint: {'x': 0, 'y': .9}
         on_state: root.click_settings(*args)
 
+
     Switch:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
         font_size: 10
@@ -61,15 +45,20 @@
 
     Button:
         id: 'hour10_up'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
         pos_hint: {'x': .3, 'y': .6}
-        on_release: root.hour10_up()
+        on_release:
+            root.hour10_up()
 
     Button:
         id: 'hour1_up'
         name: 'hour1_up'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -78,6 +67,8 @@
 
     Button:
         id: 'min10_up'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -86,6 +77,8 @@
 
     Button:
         id: 'min1_up'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -94,6 +87,8 @@
 
     Button:
         id: 'hour10_dn'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -102,6 +97,8 @@
 
     Button:
         id: 'hour1_dn'
+        opacity: self.parent.settings_view
+        disabled: 1
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -110,6 +107,8 @@
 
     Button:
         id: 'min10_dn'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -118,6 +117,8 @@
 
     Button:
         id: 'min1_dn'
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -125,6 +126,8 @@
         on_release: root.min1_dn()
 
     Button:
+        opacity: self.parent.settings_view
+        disabled: self.parent.settings_disabled
         text: "Set"
         size_hint: .1, .1
         pos_hint: {'x': .24, 'y': -.04}
