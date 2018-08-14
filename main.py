@@ -15,10 +15,15 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.switch import Switch
 from kivy.graphics import *
 
-alarm_time = StringProperty("00 : 00")
+
 
 class DigitalClock(FloatLayout):
     display_time = StringProperty("00 : 00")
+    alarm_time = StringProperty("00 : 00")
+    clock_view = StringProperty("1")
+    settings_view = StringProperty("0")
+    clock_disable = StringProperty("0")
+    settings_disabled = StringProperty("1")
 
 
     def update(self, dt=0):
@@ -38,9 +43,22 @@ class DigitalClock(FloatLayout):
 
     def click_settings(self, *args):
         if args[1] == 'down':
-            print("Settings Active")
+            self.settings_view = "1"
+            self.settings_disabled = "0"
+            self.clock_disable = '1'
+            self.clock_view = "0"
+            print("clock disabled: " + self.clock_disable)
+            print("settings  disabled: " + self.settings_disabled)
+            self.update()
+
         else:
-            print("Settings Disabled")
+            self.settings_disabled = "1"
+            self.settings_view = "0"
+            self.clock_disable = "0"
+            self.clock_view = "1"
+            print("clock disalbed: " + self.clock_disable)
+            print("settings  disabled: " + self.settings_disabled)
+
 
     def switch_state(self, *args):
         if args[1] == True:
@@ -72,9 +90,6 @@ class DigitalClock(FloatLayout):
     def min1_dn(self):
         print("Minute 1 Down")
 
-    def alarm_ampm(self, *args):
-        if args[1] == "down":
-            print("PM")
 
 
 
