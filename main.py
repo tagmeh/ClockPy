@@ -25,8 +25,6 @@ class DigitalClock(FloatLayout):
     alarm_state = NumericProperty(0)
     nfc_read = ListProperty()
     rando = NumericProperty(0)
-    pyglet.lib.load_library('avbin')
-    pyglet.have_avbin = True
 
 
     def update(self, dt=0):
