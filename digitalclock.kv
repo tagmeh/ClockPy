@@ -1,4 +1,4 @@
-#:kivy 1.7.2
+#:kivy 1.10.1
 
 
 <DigitalClock>:
@@ -9,14 +9,14 @@
         text: self.parent.display_time
         font_size: 100
         opacity: self.parent.clock_view
-        disabled: self.parent.clock_disable
+        enabled: 1
         size_hint_y: 1
 
 
     Label:
         id: 'alarm_time'
         opacity: self.parent.settings_view
-        text: "Alarm Time"
+        text: str(self.parent.alarm_time_hour).zfill(2) + " : " + str(self.parent.alarm_time_minute).zfill(2)
         font_size: 100
         size_hint_y: 1
 
@@ -44,9 +44,8 @@
         on_active: root.switch_state(*args)
 
     Button:
-        id: 'hour10_up'
+        name: 'hour10_up'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -55,10 +54,8 @@
             root.hour10_up()
 
     Button:
-        id: 'hour1_up'
         name: 'hour1_up'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -66,9 +63,8 @@
         on_release: root.hour1_up()
 
     Button:
-        id: 'min10_up'
+        name: 'min10_up'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -76,9 +72,8 @@
         on_release: root.min10_up()
 
     Button:
-        id: 'min1_up'
+        name: 'min1_up'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "+"
         font_size: 10
         size_hint: .08, .1
@@ -86,9 +81,8 @@
         on_release: root.min1_up()
 
     Button:
-        id: 'hour10_dn'
+        name: 'hour10_dn'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -96,9 +90,8 @@
         on_release: root.hour10_dn()
 
     Button:
-        id: 'hour1_dn'
+        name: 'hour1_dn'
         opacity: self.parent.settings_view
-        disabled: 1
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -106,9 +99,8 @@
         on_release: root.hour1_dn()
 
     Button:
-        id: 'min10_dn'
+        name: 'min10_dn'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -116,9 +108,8 @@
         on_release: root.min10_dn()
 
     Button:
-        id: 'min1_dn'
+        name: 'min1_dn'
         opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
         text: "-"
         font_size: 10
         size_hint: .08, .1
@@ -126,8 +117,8 @@
         on_release: root.min1_dn()
 
     Button:
-        opacity: self.parent.settings_view
-        disabled: self.parent.settings_disabled
+        opacity: 0
+        disabled: 1
         text: "Set"
         size_hint: .1, .1
         pos_hint: {'x': .24, 'y': -.04}
