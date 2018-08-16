@@ -4,14 +4,10 @@ import time
 import os
 import datetime
 import random
-import pyglet
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, ListProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
-
-
-
 
 
 class DigitalClock(FloatLayout):
@@ -25,7 +21,7 @@ class DigitalClock(FloatLayout):
     alarm_state = NumericProperty(0)
     nfc_read = ListProperty()
     rando = NumericProperty(0)
-
+    colour = NumericProperty(0)
 
     def update(self, dt=0):
         self.display_time = time.strftime("%H : %M")
@@ -42,13 +38,18 @@ class DigitalClock(FloatLayout):
         Clock.schedule_once(self.update, secs_to_next_minute)
 
         # Activating the alarm
+        print("Schedule Update")
         print("Alarm Mode: " + str(self.alarm_mode))
         if (self.display_time == self.alarm_time) and (self.alarm_mode == 1):
             self.alarm_state = 1
             print("!!ALARM!!")
+            print('Alarm State: ' + str(self.alarm_state))
             self.rando = random.randint(1,7)
             print("Random Num: " + str(self.rando))
-
+            self.snooze_mode()
+        else:
+            self.alarm_state = 0
+            self.colour = 0
 
             ###### THIS PATH NEEDS TO CHANGE BASED ON UID READ FROM NFC / AND CHANGE FURTHER ONCE ON THE RASPPI ######
 
@@ -61,9 +62,14 @@ class DigitalClock(FloatLayout):
     def snooze_mode(self): #snooze for 4 minutes
         if self.alarm_state == 1:
 
-            Clock.schedule_once(self.update, 240)
-            if music == False:
-                pass #####
+            Clock.schedule_once(self.update, 1)
+            if self.colour == 0:
+                self.colour = 1
+            else:
+                self.colour = 0
+
+            #if music == False:
+             #   pass #####
 
 
     def click_settings(self, *args):
@@ -88,6 +94,7 @@ class DigitalClock(FloatLayout):
         else:
             self.alarm_mode = 0
             self.alarm_state = 0
+            self.colour = 0
             print("Alarm Off: " + str(self.alarm_mode))
 
     def hour10_up(self):
