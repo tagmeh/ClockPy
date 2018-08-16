@@ -2,6 +2,12 @@
 
 
 <DigitalClock>:
+    canvas.before:
+        Color:
+            rgba: root.colour, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
     id: clock
 
     Label:
