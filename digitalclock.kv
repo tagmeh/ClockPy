@@ -18,14 +18,12 @@
         enabled: 1
         size_hint_y: 1
 
-
     Label:
         id: 'alarm_time'
         opacity: self.parent.settings_view
         text: str(self.parent.alarm_time_hour).zfill(2) + " : " + str(self.parent.alarm_time_minute).zfill(2)
         font_size: 100
         size_hint_y: 1
-
 
     Label:
         text: "Alarm"
@@ -39,7 +37,6 @@
         size_hint: .1, .1
         pos_hint: {'x': 0, 'y': .9}
         on_state: root.click_settings(*args)
-
 
     Switch:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
