@@ -4,73 +4,97 @@ import time
 import os
 import datetime
 import random
+#  from pygame import mixer   #         Needs Pygame installed
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, ListProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
+from kivy.config import Config
+
 
 
 class DigitalClock(FloatLayout):
     display_time = StringProperty("00 : 00")
+    alarm_time = StringProperty("00 : 00")
     alarm_time_hour = NumericProperty(00)
     alarm_time_minute = NumericProperty(00)
     clock_view = StringProperty("1")
     settings_view = StringProperty("0")
-    alarm_time = StringProperty("00 : 00")
-    alarm_mode = NumericProperty(0)
-    alarm_state = NumericProperty(0)
-    nfc_read = ListProperty()
+    alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
+    alarm_active = NumericProperty(0)       # Initial Alarm Call
+    is_alarming = NumericProperty(0)        # Alarm Loop
+    nfc_read = list(('04', '33', '3A', '4A', '22', '4B', '81'))
     rando = NumericProperty(0)
+    section = NumericProperty(1)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
+    play_num = NumericProperty(0)
+    audio_path = StringProperty("")
+    audio_file = StringProperty("")
     colour = NumericProperty(0)
+    alarm_event = ()
 
     def update(self, dt=0):
         self.display_time = time.strftime("%H : %M")
         self.schedule_update()
 
 
-    def schedule_update(self):
+    def schedule_update(self, dt=0):
         current_time = time.localtime()
         seconds = current_time[5]
-
-        # Handle leap seconds?
         secs_to_next_minute = 60 - seconds
 
-        Clock.schedule_once(self.update, secs_to_next_minute)
-
-        # Activating the alarm
-        print("Schedule Update")
-        print("Alarm Mode: " + str(self.alarm_mode))
-        if (self.display_time == self.alarm_time) and (self.alarm_mode == 1):
-            self.alarm_state = 1
+        #print("Alarm Switch: " + str(self.alarm_switch))
+        #print("alarm_time: " + self.alarm_time)
+        #print("Current Time: " + self.display_time)
+        #print("Is Alarming: " + str(self.is_alarming))
+        if (self.display_time == self.alarm_time) and (self.alarm_switch == 1) and (self.is_alarming == 0):
+            self.is_alarming = 1
             print("!!ALARM!!")
-            print('Alarm State: ' + str(self.alarm_state))
-            self.rando = random.randint(1,7)
-            print("Random Num: " + str(self.rando))
-            self.snooze_mode()
+            Clock.schedule_once(self.update, secs_to_next_minute)
+            self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
         else:
-            self.alarm_state = 0
-            self.colour = 0
+            Clock.schedule_once(self.update, secs_to_next_minute)
 
-            ###### THIS PATH NEEDS TO CHANGE BASED ON UID READ FROM NFC / AND CHANGE FURTHER ONCE ON THE RASPPI ######
 
-            #self.music = pyglet.media.load("C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-master/KivyDigitalClock-master/Sounds/01-CaptainAmerica/" + str(self.rando) + ".ogg", streaming=False)
-            #if music:
-            #    print("Sound found at %s" % sound.source)
-            #    print("Sound is %.3f seconds" % sound.length)
-            #    music.play()
-
-    def snooze_mode(self): #snooze for 4 minutes
-        if self.alarm_state == 1:
-
-            Clock.schedule_once(self.update, 1)
+    def alarm_loop(self, *args):
+        if self.is_alarming == 1 and (self.alarm_switch == 1):
+            print("NFC UID: " + str(self.nfc_read[1])) # TODO READ NFC UID RIGHT HERE
             if self.colour == 0:
                 self.colour = 1
             else:
                 self.colour = 0
+        else:
+            self.is_alarming = 0
+            Clock.unschedule(self.alarm_event)
+            # TODO PLAY AUDIO FROM RASPBERRY PI CODE
+                     #### Running the Audio File while in alarm ####
+                #music = pygame.mixer.music
+            #if music.get_busy() == False:
+                #self.rando = random.randint(1, 7)
+               # self.play_num = (self.rando) * (self.section)
+                #self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
+                #print("Audio File: " + str(self.audio_file))
+             #   if self.section == 1:
+             #       self.section = 2
+             #   else:
+             #       if self.section == 2:
+             #           self.section = 3
+             #       else:
+             #           self.section = 1
+             #   if self.nfc_read[1] == "3E" or "3A":       # TODO THIS PATH NEEDS TO CHANGE ONCE ON THE RASPPI ######
+             #       self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-master/KivyDigitalClock-master/Sounds/01-CaptainAmerica/"
+             #       print("Audio Path: Cap - " + str(self.audio_path))  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
+             #   else:
+             #       if self.nfc_read[1] == "33" or "CD":
+             #           self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-master/KivyDigitalClock-master/Sounds/02-Hulk/"
+             #           print("Audio Path: HULK - " + str(self.audio_path)) ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
+             #           self.alarm_mode()
+             #   else:
+             #       self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-master/KivyDigitalClock-master/Sounds/"
+             #       print("Audio Path: Default - " + str(self.audio_path))
+             #       self.alarm_mode()
 
-            #if music == False:
-             #   pass #####
 
+    # TODO - Add Snooze Function
 
     def click_settings(self, *args):
         if args[1] == 'down':
@@ -78,24 +102,23 @@ class DigitalClock(FloatLayout):
             self.clock_view = "0"
             print("clock enabled: " + self.clock_view)
             print("settings enabled: " + self.settings_view)
-            self.update()  # Used for testing only - Comment out after
+            #self.schedule_update()  # Used for testing only - Comment out after
 
         else:
             self.settings_view = "0"
             self.clock_view = "1"
             print("clock enabled: " + self.clock_view)
             print("settings enabled: " + self.settings_view)
-            self.update()  # Used for testing only - Comment out after
+            #self.schedule_update()  # Used for testing only - Comment out after
 
     def switch_state(self, *args):
         if args[1] == True:
-            self.alarm_mode = 1
-            print("Alarm On: " + str(self.alarm_mode))
+            self.alarm_switch = 1
+            print("Alarm On: " + str(self.alarm_switch))
         else:
-            self.alarm_mode = 0
-            self.alarm_state = 0
+            self.alarm_switch = 0
             self.colour = 0
-            print("Alarm Off: " + str(self.alarm_mode))
+            print("Alarm Off: " + str(self.alarm_switch))
 
     def hour10_up(self):
         if self.settings_view == "1":
@@ -174,4 +197,7 @@ class DigitalClockApp(App):
 
 
 if __name__ == '__main__':
+    #Config.set('graphics', 'fullscreen', 'auto')              ####ENABLE FULLSCREEN####
+    #Config.set('graphics', 'window_state', 'maximized')        ###MAY NOT NEED THIS ONE###
+    #Config.write()
     DigitalClockApp().run()
