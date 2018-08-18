@@ -120,11 +120,9 @@
         on_release: root.min1_dn()
 
     Button:
-        opacity: 0
-        disabled: 1
-        text: "Set"
+        opacity: self.parent.is_alarming
+        text: "SNOOZE"
         size_hint: .1, .1
-        pos_hint: {'x': .24, 'y': -.04}
-        on_release:
-            self.text = 'Alarm Set'
+        pos_hint: {'x': .74, 'y': .35}
+        on_press: root.snooze_func()
 
