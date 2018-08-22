@@ -21,7 +21,7 @@
     Label:
         id: 'alarm_time'
         opacity: self.parent.settings_view
-        text: str(self.parent.alarm_time_hour).zfill(2) + " : " + str(self.parent.alarm_time_minute).zfill(2)
+        text: str(self.parent.alarm_time)
         font_size: 100
         size_hint_y: 1
 
@@ -37,6 +37,15 @@
         size_hint: .1, .1
         pos_hint: {'x': 0, 'y': .9}
         on_state: root.click_settings(*args)
+
+    ToggleButton:
+        id: 'fullscreen_toggle'
+        opacity: self.parent.settings_view
+        text: 'Toggle Fullscreen'
+        font_size: 10
+        size_hint: .1, .1
+        pos_hint: {'x': 0, 'y': 0}
+        on_state: root.toggle_fullscreen(*args)
 
     Switch:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
@@ -125,4 +134,6 @@
         size_hint: .1, .1
         pos_hint: {'x': .74, 'y': .35}
         on_press: root.snooze_func()
+
+
 
