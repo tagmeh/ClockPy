@@ -67,44 +67,48 @@ class DigitalClock(FloatLayout):
                 self.colour = 1
             else:
                 self.colour = 0
+            if pygame.mixer.get_busy() == False:
+                self.rando = random.randint(1, 7)
+                self.play_num = (self.rando) * (self.section)
+                if self.section == 1:
+                    self.section = 2
+                else:
+                    if self.section == 2:
+                        self.section = 3
+                    else:
+                        self.section = 1
+                if self.nfc_read == self.nfc_cap:  # TODO THIS PATH NEEDS TO CHANGE ONCE ON THE RASPPI ######
+                    self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/01-CaptainAmerica/"
+                    self.audio_file = (
+                                self.audio_path + str(self.play_num) + ".ogg")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
+                    # print("Audio File: Cap - " + str(self.audio_file))
+                    sound_file = pygame.mixer.Sound(str(self.audio_file))
+                    # print(pygame.mixer.Sound)
+                    pygame.mixer.Sound.play(sound_file)
+                else:
+                    if (self.nfc_read == self.nfc_hulk) or (self.nfc_read == self.nfc_hulk2):
+                        self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/02-Hulk/"
+                        self.audio_file = (self.audio_path + str(
+                            self.play_num) + ".ogg")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
+                        # print("Audio File: HULK - " + str(self.audio_file))
+                        sound_file = pygame.mixer.Sound(str(self.audio_file))
+                        # print(pygame.mixer.Sound)
+                        pygame.mixer.Sound.play(sound_file)
+                    else:
+                        self.rando = random.randint(1, 2)
+                        self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/"
+                        self.audio_file = (
+                                    self.audio_path + str(self.rando) + ".wav")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
+                        # print("Audio File: Default - " + str(self.audio_file))
+                        sound_file = pygame.mixer.Sound(str(self.audio_file))
+                        # print(pygame.mixer.Sound)
+                        pygame.mixer.Sound.play(sound_file)
         else:
             self.is_alarming = 0
             Clock.unschedule(self.alarm_event)
             # TODO PLAY AUDIO FROM RASPBERRY PI CODE
                      #### Running the Audio File while in alarm ####
-        if pygame.mixer.get_busy() == False:
-            self.rando = random.randint(1, 7)
-            self.play_num = (self.rando) * (self.section)
-            if self.section == 1:
-                self.section = 2
-            else:
-                if self.section == 2:
-                    self.section = 3
-                else:
-                    self.section = 1
-            if self.nfc_read == self.nfc_cap:       # TODO THIS PATH NEEDS TO CHANGE ONCE ON THE RASPPI ######
-                self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/01-CaptainAmerica/"
-                self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")   ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                #print("Audio File: Cap - " + str(self.audio_file))
-                sound_file = pygame.mixer.Sound(str(self.audio_file))
-                #print(pygame.mixer.Sound)
-                pygame.mixer.Sound.play(sound_file)
-            else:
-                if (self.nfc_read == self.nfc_hulk) or (self.nfc_read == self.nfc_hulk2):
-                    self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/02-Hulk/"
-                    self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")   ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                    #print("Audio File: HULK - " + str(self.audio_file))
-                    sound_file = pygame.mixer.Sound(str(self.audio_file))
-                    #print(pygame.mixer.Sound)
-                    pygame.mixer.Sound.play(sound_file)
-                else:
-                    self.rando = random.randint(1, 2)
-                    self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/"
-                    self.audio_file = (self.audio_path + str(self.rando) + ".wav")   ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                    #print("Audio File: Default - " + str(self.audio_file))
-                    sound_file = pygame.mixer.Sound(str(self.audio_file))
-                    #print(pygame.mixer.Sound)
-                    pygame.mixer.Sound.play(sound_file)
+
 
 
     # TODO - Add Snooze Function
