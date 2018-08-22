@@ -1,17 +1,15 @@
 #!/bin/python
 
 import time
-import os
-import datetime
+#import os
+#import datetime
 import random
-import pygame  #         Needs Pygame installed
+import pygame   # Needs Pygame installed
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import NumericProperty, ListProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
-
-
 
 class DigitalClock(FloatLayout):
     display_time = StringProperty("00 : 00")
@@ -25,7 +23,7 @@ class DigitalClock(FloatLayout):
     alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
     alarm_active = NumericProperty(0)       # Initial Alarm Call
     is_alarming = NumericProperty(0)        # Alarm Loop
-    nfc_read = '' #Starting list structure for NFC tags
+    nfc_read = ''   #Starting list structure for NFC tags
     nfc_cap = '04:3E:3A:4A:22:4B:81'
     nfc_hulk = '04:33:3F:4A:22:4B:80'
     nfc_hulk2 = '04:CD:D4:4A:2F:31:80'
@@ -67,16 +65,16 @@ class DigitalClock(FloatLayout):
                 self.colour = 1
             else:
                 self.colour = 0
-            if pygame.mixer.get_busy() == False:
+            if pygame.mixer.get_busy() == False:  # Running the Audio File while in alarm #
                 self.rando = random.randint(1, 7)
-                self.play_num = (self.rando) * (self.section)
-                if self.section == 1:
-                    self.section = 2
+                self.play_num = (self.rando) + (self.section)
+                if self.section == 0:
+                    self.section = 7
                 else:
-                    if self.section == 2:
-                        self.section = 3
+                    if self.section == 7:
+                        self.section = 14
                     else:
-                        self.section = 1
+                        self.section = 0
                 if self.nfc_read == self.nfc_cap:  # TODO THIS PATH NEEDS TO CHANGE ONCE ON THE RASPPI ######
                     self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/01-CaptainAmerica/"
                     self.audio_file = (
@@ -95,7 +93,7 @@ class DigitalClock(FloatLayout):
                         # print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
                     else:
-                        self.rando = random.randint(1, 2)
+                        self.rando = random.randint(1, 3)
                         self.audio_path = "C:/Users/tate.justin/AppData/Local/Programs/Python/Python36-32/PiClock/KivyDigitalClock-DO NOT DELETE/KivyDigitalClock-master/Sounds/"
                         self.audio_file = (
                                     self.audio_path + str(self.rando) + ".wav")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
@@ -106,10 +104,6 @@ class DigitalClock(FloatLayout):
         else:
             self.is_alarming = 0
             Clock.unschedule(self.alarm_event)
-            # TODO PLAY AUDIO FROM RASPBERRY PI CODE
-                     #### Running the Audio File while in alarm ####
-
-
 
     # TODO - Add Snooze Function
     def snooze_func(self, *args):
@@ -231,9 +225,6 @@ class DigitalClock(FloatLayout):
                 self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
 
 
-
-
-
 class DigitalClockApp(App):
     def build(self):
         dc = DigitalClock()
@@ -245,3 +236,4 @@ class DigitalClockApp(App):
 if __name__ == '__main__':
 
     DigitalClockApp().run()
+
