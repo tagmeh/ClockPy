@@ -48,7 +48,7 @@ class DigitalClock(FloatLayout):
         if (self.display_time == self.alarm_time) and (self.alarm_switch == 1) and (self.is_alarming == 0):
             self.is_alarming = 1
             print("!!ALARM!!")
-            Clock.schedule_once(self.update, secs_to_next_minute + 1) #add 1 second to ensure it updates after the new minute
+            Clock.schedule_once(self.update, secs_to_next_minute)
             self.schedule_alarm()
         else:
             Clock.schedule_once(self.update, secs_to_next_minute)
