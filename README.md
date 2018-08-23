@@ -34,3 +34,6 @@ Requirements: python3, kivy 1.10.1, pygame
 -- Alternate -					- 04, 56, A1, B2, AF, 37, 80 - uid[1]=56 / uid[2]=A1
 
 
+
+--Credits to dwalker0044 for the python/kivy base clock that got me started.
+https://github.com/dwalker0044/KivyDigitalClock
