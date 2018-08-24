@@ -4,7 +4,7 @@ Python Alarm Clock using Kivy UIX
 
 ====================
 
-Requirements: python3, Kivy 1.10.1, pygame, pi-rc522
+Requirements: python, Kivy 1.10.1, pygame, pi-rc522
 
 https://kivy.org/doc/stable/gettingstarted/installation.html
 
