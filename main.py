@@ -23,10 +23,9 @@ class DigitalClock(FloatLayout):
     alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
     alarm_active = NumericProperty(0)       # Initial Alarm Call
     is_alarming = NumericProperty(0)        # Alarm Loop
-    nfc_read = ''   #Starting list structure for NFC tags
-    nfc_cap = '04:3E:3A:4A:22:4B:81'
-    nfc_hulk = '04:33:3F:4A:22:4B:80'
-    nfc_hulk2 = '04:CD:D4:4A:2F:31:80'
+    nfc_read = '136, 4, 62, 58, 136'   #Starting list structure for NFC tags
+    nfc_cap = '136, 4, 62, 58, 136'
+    nfc_hulk = '136, 4, 72, 63, 251'
     rando = NumericProperty(0)
     section = NumericProperty(1)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
     play_num = NumericProperty(0)
