@@ -75,7 +75,7 @@ class DigitalClock(FloatLayout):
                     else:
                         self.section = 0
                 if self.nfc_read == self.nfc_cap:  # TODO THIS PATH NEEDS TO CHANGE ONCE ON THE RASPPI ######
-                    self.audio_path = /home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
+                    self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
                     self.audio_file = (
                                 self.audio_path + str(self.play_num) + ".ogg")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
                     print("Audio File: Cap - " + str(self.audio_file))
