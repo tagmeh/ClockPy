@@ -1,5 +1,8 @@
 #!/bin/python
 
+import os
+os.putenv('SDL_AUDIODRIVER', 'alsa')
+os.putenv('SDL_AUDIODEV', '/dev/audio')
 import time
 #import os
 #import datetime
@@ -23,9 +26,9 @@ class DigitalClock(FloatLayout):
     alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
     alarm_active = NumericProperty(0)       # Initial Alarm Call
     is_alarming = NumericProperty(0)        # Alarm Loop
-    nfc_read = '136, 4, 62, 58, 136'   #Starting list structure for NFC tags
-    nfc_cap = '136, 4, 62, 58, 136'
-    nfc_hulk = '136, 4, 72, 63, 251'
+    nfc_read = ''   #Starting empty string for NFC tags
+    nfc_cap = '136, 4, 62, 58, 136' #returned ID for my Captain America figure
+    nfc_hulk = '136, 4, 72, 63, 251' #returned ID for my Hulk figure
     rando = NumericProperty(0)
     section = NumericProperty(1)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
     play_num = NumericProperty(0)
@@ -235,4 +238,3 @@ class DigitalClockApp(App):
 if __name__ == '__main__':
 
     DigitalClockApp().run()
-
