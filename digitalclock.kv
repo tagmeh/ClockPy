@@ -61,7 +61,7 @@
         text: "+"
         font_size: 15
         size_hint: .08, .12
-        pos_hint: {'x': .3, 'y': .6}
+        pos_hint: {'x': .27, 'y': .6}
         on_release:
             root.hour10_up()
 
@@ -79,7 +79,7 @@
         opacity: self.parent.settings_view
         text: "+"
         font_size: 15
-        size_hint: .08, .1
+        size_hint: .08, .12
         pos_hint: {'x': .54, 'y': .6}
         on_release: root.min10_up()
 
@@ -88,8 +88,8 @@
         opacity: self.parent.settings_view
         text: "+"
         font_size: 10
-        size_hint: .08, .1
-        pos_hint: {'x': .62, 'y': .6}
+        size_hint: .08, .12
+        pos_hint: {'x': .66, 'y': .6}
         on_release: root.min1_up()
 
     Button:
@@ -97,8 +97,8 @@
         opacity: self.parent.settings_view
         text: "-"
         font_size: 10
-        size_hint: .08, .1
-        pos_hint: {'x': .3, 'y': .3}
+        size_hint: .08, .12
+        pos_hint: {'x': .27, 'y': .3}
         on_release: root.hour10_dn()
 
     Button:
@@ -106,7 +106,7 @@
         opacity: self.parent.settings_view
         text: "-"
         font_size: 10
-        size_hint: .08, .1
+        size_hint: .08, .12
         pos_hint: {'x': .38, 'y': .3}
         on_release: root.hour1_dn()
 
@@ -115,7 +115,7 @@
         opacity: self.parent.settings_view
         text: "-"
         font_size: 10
-        size_hint: .08, .1
+        size_hint: .08, .12
         pos_hint: {'x': .54, 'y': .3}
         on_release: root.min10_dn()
 
@@ -124,14 +124,14 @@
         opacity: self.parent.settings_view
         text: "-"
         font_size: 10
-        size_hint: .08, .1
-        pos_hint: {'x': .62, 'y': .3}
+        size_hint: .08, .12
+        pos_hint: {'x': .66, 'y': .3}
         on_release: root.min1_dn()
 
     Button:
         opacity: self.parent.is_alarming
         text: "SNOOZE"
-        size_hint: .1, .1
+        size_hint: .1, .12
         pos_hint: {'x': .74, 'y': .35}
         on_press: root.snooze_func()
 
