@@ -63,7 +63,10 @@ If touchscreen doesn't work right away. Be sure to use a USB cable that supports
 
 ***################### TO FORCE PI AUDIO OUT OF 3.5MM PORT WHILE USING HDMI #################***
 https://raspberrypi.stackexchange.com/questions/68127/how-to-change-audio-output-device-for-python  
-1) Get a list of your sound cards using aplay -l  
+1) Get a list of your sound cards using  
+```python  
+aplay -l  
+```  
 2) Create/edit the system-wide alsa configuration file at /etc/asound.conf, e.g. with sudo nano /etc/asound.conf  
 3) Into this file, paste   
 ```python   
