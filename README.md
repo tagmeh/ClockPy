@@ -12,19 +12,12 @@ https://github.com/HubCityLabs/py532lib
 ***My example directory***  
 *** /home/pi/Desktop/PyClock/ ***
 
-***Example Character UID Values***  
+***Example Character UID Values***  I have an alternate because I added NFC stickers to the bottoms of my bases.
 // Folder 1 = Captain America 	- 136, 4, 62, 58, 136   
--- Alternate -   
+-- Alternate -                  -
 // Folder 2 = Hulk 				- 136, 4, 72, 63, 251  
 -- Alternate -					-   
-// Folder 3 = Ultron 			-   
--- Alternate -					-   
-// Folder 4 = Baloo 			- 136, 4, 62, 58, 136  
--- note -				    	- Same as Cap, this is an issue for using both. I assume because I'm using the old RC522  
-// Folder 5 = Zeb Orrelios  	-   
--- Alternate -					-   
-// Folder 6 = Green Goblin 		- 136, 4, 40, 58, 158  
--- Alternate -					- E2
+
 
 
 
