@@ -78,27 +78,27 @@ class DigitalClock(FloatLayout):
                     self.audio_path = /home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
                     self.audio_file = (
                                 self.audio_path + str(self.play_num) + ".ogg")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                    # print("Audio File: Cap - " + str(self.audio_file))
+                    print("Audio File: Cap - " + str(self.audio_file))
                     sound_file = pygame.mixer.Sound(str(self.audio_file))
-                    # print(pygame.mixer.Sound)
+                    print(pygame.mixer.Sound)
                     pygame.mixer.Sound.play(sound_file)
                 else:
                     if (self.nfc_read == self.nfc_hulk) or (self.nfc_read == self.nfc_hulk2):
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
                         self.audio_file = (self.audio_path + str(
                             self.play_num) + ".ogg")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                        # print("Audio File: HULK - " + str(self.audio_file))
+                        print("Audio File: HULK - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        # print(pygame.mixer.Sound)
+                        print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
                     else:
                         self.rando = random.randint(1, 3)
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/"
                         self.audio_file = (
                                     self.audio_path + str(self.rando) + ".wav")  ## ^^^^^^^ CHANGE PATH HERE ^^^^^^^^ ##
-                        # print("Audio File: Default - " + str(self.audio_file))
+                        print("Audio File: Default - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        # print(pygame.mixer.Sound)
+                        print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
         else:
             self.is_alarming = 0
