@@ -1,5 +1,9 @@
 PyClock  
-Python Alarm Clock using Kivy UIX
+Python Alarm Clock using Kivy UIX  
+--Still TODO--  
+1) Fix Button sizes with new 140p font  
+2) add-in weekday feature for alarm (Buttons along top?)  
+3) Test PN532 Functionality
 
 ====================
 
