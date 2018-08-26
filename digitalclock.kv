@@ -13,7 +13,7 @@
     Label:
         id: 'clock_time'
         text: self.parent.display_time
-        font_size: 100
+        font_size: 140
         opacity: self.parent.clock_view
         enabled: 1
         size_hint_y: 1
@@ -22,7 +22,7 @@
         id: 'alarm_time'
         opacity: self.parent.settings_view
         text: str(self.parent.alarm_time)
-        font_size: 100
+        font_size: 140
         size_hint_y: 1
 
     Label:
@@ -33,9 +33,9 @@
     ToggleButton:
         id: 'button_settings'
         text: "Settings"
-        font_size: 10
-        size_hint: .1, .1
-        pos_hint: {'x': 0, 'y': .9}
+        font_size: 20
+        size_hint: .2, .2
+        pos_hint: {'x': 0, 'y': .8}
         on_state: root.click_settings(*args)
 
     ToggleButton:
@@ -49,9 +49,9 @@
 
     Switch:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
-        font_size: 10
-        size_hint: .1, .1
-        pos_hint: {'x': .9, 'y': .89}        #
+        font_size: 20
+        size_hint: .15, .15
+        pos_hint: {'x': .85, 'y': .82}        #
         background_color: 0, 0, 0 ,0
         on_active: root.switch_state(*args)
 
@@ -59,8 +59,8 @@
         name: 'hour10_up'
         opacity: self.parent.settings_view
         text: "+"
-        font_size: 10
-        size_hint: .08, .1
+        font_size: 15
+        size_hint: .08, .12
         pos_hint: {'x': .3, 'y': .6}
         on_release:
             root.hour10_up()
@@ -69,8 +69,8 @@
         name: 'hour1_up'
         opacity: self.parent.settings_view
         text: "+"
-        font_size: 10
-        size_hint: .08, .1
+        font_size: 15
+        size_hint: .08, .12
         pos_hint: {'x': .38, 'y': .6}
         on_release: root.hour1_up()
 
@@ -78,7 +78,7 @@
         name: 'min10_up'
         opacity: self.parent.settings_view
         text: "+"
-        font_size: 10
+        font_size: 15
         size_hint: .08, .1
         pos_hint: {'x': .54, 'y': .6}
         on_release: root.min10_up()
@@ -134,6 +134,5 @@
         size_hint: .1, .1
         pos_hint: {'x': .74, 'y': .35}
         on_press: root.snooze_func()
-
 
 
