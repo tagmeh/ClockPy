@@ -12,7 +12,7 @@ https://github.com/HubCityLabs/py532lib
 ***My example directory***  
 *** /home/pi/Desktop/PyClock/ ***
 
-***Character UID Values!***  
+***Example Character UID Values***  
 // Folder 1 = Captain America 	- 136, 4, 62, 58, 136   
 -- Alternate -   
 // Folder 2 = Hulk 				- 136, 4, 72, 63, 251  
