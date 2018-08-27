@@ -1,9 +1,5 @@
 PyClock  
-Python Alarm Clock using Kivy UIX  
---Still TODO--  
-1) Fix Button sizes with new 140p font  
-2) add-in weekday feature for alarm (Buttons along top?)  
-3) Test PN532 Functionality
+Python Alarm Clock using Kivy UIX
 
 ====================
 
@@ -16,12 +12,19 @@ https://github.com/HubCityLabs/py532lib
 ***My example directory***  
 *** /home/pi/Desktop/PyClock/ ***
 
-***Example Character UID Values***  I have an alternate because I added NFC stickers to the bottoms of my bases.   
+***Character UID Values!***  
 // Folder 1 = Captain America 	- 136, 4, 62, 58, 136   
--- Alternate -                  -    
-// Folder 2 = Hulk 				- 136, 4, 72, 63, 251   
+-- Alternate -   
+// Folder 2 = Hulk 				- 136, 4, 72, 63, 251  
 -- Alternate -					-   
-
+// Folder 3 = Ultron 			-   
+-- Alternate -					-   
+// Folder 4 = Baloo 			- 136, 4, 62, 58, 136  
+-- note -				    	- Same as Cap, this is an issue for using both. I assume because I'm using the old RC522  
+// Folder 5 = Zeb Orrelios  	-   
+-- Alternate -					-   
+// Folder 6 = Green Goblin 		- 136, 4, 40, 58, 158  
+-- Alternate -					- E2
 
 
 
@@ -54,7 +57,8 @@ hdmi_cvt 1024 600 60 6 0 0 0
 
 Do this over SSH. It's way easier than typing in Raspbian CLI  
 kivy installs at /usr/local/lib/python2.7/dist-packages/kivy  
-Follow guide at https://github.com/mrichardson23/rpi-kivy-screen or http://mattrichardson.com/kivy-gpio-raspberry-pi-touch/index.html if you prefer white on black
+Follow guide at https://github.com/mrichardson23/rpi-kivy-screen   
+or http://mattrichardson.com/kivy-gpio-raspberry-pi-touch/index.html if you prefer white on black
 
 
 sudo rm -rf LCD-show  
@@ -65,12 +69,9 @@ sudo ./MPI5001-show
 
 If touchscreen doesn't work right away. Be sure to use a USB cable that supports data, and try different USB ports.
 
-***################### TO FORCE PI AUDIO OUT OF 3.5MM PORT WHILE USING HDMI #################***
+***################### TO FORCE PI AUDIO OUT OF 3.5MM PORT WHILE USING HDMI #################***  
 https://raspberrypi.stackexchange.com/questions/68127/how-to-change-audio-output-device-for-python  
-1) Get a list of your sound cards using  
-```python  
-aplay -l  
-```  
+1) Get a list of your sound cards using aplay -l  
 2) Create/edit the system-wide alsa configuration file at /etc/asound.conf, e.g. with sudo nano /etc/asound.conf  
 3) Into this file, paste   
 ```python   
