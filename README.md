@@ -15,7 +15,7 @@ https://github.com/HubCityLabs/py532lib
 ***Character UID Values!***  
 // Folder 1 = Captain America 	- 136, 4, 62, 58, 136   
 -- Alternate -   
-// Folder 2 = Hulk 				- 136, 4, 72, 63, 251  
+// Folder 2 = Hulk 				- 04, 48, 3f, 4a, 22, 4b, 80 
 -- Alternate -					-   
 // Folder 3 = Ultron 			-   
 -- Alternate -					-   
