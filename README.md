@@ -13,18 +13,18 @@ https://github.com/HubCityLabs/py532lib
 *** /home/pi/Desktop/PyClock/ ***
 
 ***Character UID Values!***  
-// Folder 1 = Captain America 	- 136, 4, 62, 58, 136   
--- Alternate -   
-// Folder 2 = Hulk 				- 04, 48, 3f, 4a, 22, 4b, 80 
--- Alternate -					-   
+// Folder 1 = Captain America 	- 04, 3e, 3a, 4a, 22, 4b, 81  
+-- Byte Form -                  - 04 3e 3a 4a 22 4b 81  
+// Folder 2 = Hulk 				- 04, 48, 3f, 4a, 22, 4b, 80  
+-- Byte Form -					- 04 48 3f 4a 22 4b 80   
 // Folder 3 = Ultron 			-   
 -- Alternate -					-   
-// Folder 4 = Baloo 			- 136, 4, 62, 58, 136  
--- note -				    	- Same as Cap, this is an issue for using both. I assume because I'm using the old RC522  
+// Folder 4 = Baloo 			- 
+-- note -				    	- 
 // Folder 5 = Zeb Orrelios  	-   
 -- Alternate -					-   
-// Folder 6 = Green Goblin 		- 136, 4, 40, 58, 158  
--- Alternate -					- E2
+// Folder 6 = Green Goblin 		-  
+-- Alternate -					- 
 
 
 
