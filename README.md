@@ -13,18 +13,18 @@ https://github.com/HubCityLabs/py532lib
 *** /home/pi/Desktop/PyClock/ ***
 
 ***Character UID Values!***  
-// Folder 1 = Captain America 	- 04, 3e, 3a, 4a, 22, 4b, 81  
--- Byte Form -                  - 04 3e 3a 4a 22 4b 81  
-// Folder 2 = Hulk 				- 04, 48, 3f, 4a, 22, 4b, 80  
--- Byte Form -					- 04 48 3f 4a 22 4b 80   
-// Folder 3 = Ultron 			-   
--- Alternate -					-   
-// Folder 4 = Baloo 			- 
--- note -				    	- 
+// Folder 1 = Captain America 	- x01\x01\x00D\x00\x07\x04>   
+-- SigByte -                    - X04>    
+// Folder 2 = Hulk 				- x01\x01\x00D\x00\x07\x04H  
+-- SigByte -					- x04H   
+// Folder 3 = Ultron 			- x01\x01\x00D\x00\x07\x04C  
+-- SigByte -					- x04C  
+// Folder 4 = Baloo 			- x01\x01\x00D\x00\x07\x043  
+-- SigByte -				    - x043  
 // Folder 5 = Zeb Orrelios  	-   
--- Alternate -					-   
-// Folder 6 = Green Goblin 		-  
--- Alternate -					- 
+-- SigByte -					-   
+// Folder 6 = Green Goblin 		- x01\x01\x00D\x00\x07\x04(  
+-- SigByte -					- x04(   
 
 
 
