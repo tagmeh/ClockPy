@@ -3,16 +3,14 @@ Python Alarm Clock using Kivy UIX
 
 ====================
 
-Requirements: python, Kivy 1.10.1, pygame, py532lib  
+Requirements: Raspian Stretch, python(seems to work in 2 & 3), Kivy 1.10.1, pygame, py532lib  
+https://www.raspberrypi.org/downloads/  
 https://kivy.org/doc/stable/gettingstarted/installation.html  
 https://www.pygame.org/wiki/GettingStarted  
 https://github.com/HubCityLabs/py532lib
 
 
-***My example directory***  
-*** /home/pi/Desktop/PyClock/ ***
-
-***Character UID Values!***  
+***My Personal Character UID Values***  
 // Folder 1 = Captain America 	- x01\x01\x00D\x00\x07\x04>   
 -- SigByte -                    - X04>    
 // Folder 2 = Hulk 				- x01\x01\x00D\x00\x07\x04H  
@@ -41,7 +39,7 @@ I guess if this is an issue I'll just say to download the game and get the files
 
 
 ***################### TO ENABLE RASPBIAN STRETH TO WORK WITH MY SCREEN #################***
-
+https://www.amazon.com/gp/product/B07FDYXPT7/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1  
 -- Add following 8 lines at the end of the file /both/config.txt in raspberry pi:   
 max_usb_current=1  
 hdmi_force_hotplug=1  
@@ -51,7 +49,6 @@ hdmi_mode=1
 hdmi_mode=87  
 hdmi_drive=1  
 hdmi_cvt 1024 600 60 6 0 0 0  
-***Driver for my screen, from https://www.amazon.com/gp/product/B07FDYXPT7/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1***
 
 ***################### TO ENABLE TOUCH IN KIVY #################***
 
