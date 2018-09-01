@@ -120,7 +120,7 @@ class DigitalClock(FloatLayout):
                         #print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
                     else:
-                        self.rando = random.randint(1, 3) # Default alarm sounds if no NFC tag is found that matches above
+                        self.rando = random.randint(1, 2) # Default alarm sounds if no NFC tag is found that matches above
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/"
                         self.audio_file = (self.audio_path + str(self.rando) + ".wav")
                         #print("Audio File: Default - " + str(self.audio_file))
@@ -314,10 +314,10 @@ class DigitalClock(FloatLayout):
         if uid:
             """Grab the entire output of the NFC mobule from the I2C channel."""
             self.nfc_read = Pn532_i2c().read_mifare().get_data() #Store it in our variable.
-            print('nfc_read = ' + str(self.nfc_read))
+            #print('nfc_read = ' + str(self.nfc_read))
         else:
-            self.nfc_read = ''
-            print('no tag found')
+            self.nfc_read = '' #empty out the array
+            #print('no tag found')
 
     
 
