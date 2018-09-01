@@ -1,6 +1,5 @@
 #:kivy 1.10.1
 
-
 <DigitalClock>:
     canvas.before:
         Color:
@@ -15,7 +14,6 @@
         text: self.parent.display_time
         font_size: 140
         opacity: self.parent.clock_view
-        enabled: 1
         size_hint_y: 1
 
     Label:
@@ -28,19 +26,21 @@
     Label:
         text: "Alarm"
         font_size: 25
-        pos_hint: {'x': .45, 'y': .48}
+        pos_hint: {'x': .44, 'y': .47}
 
     ToggleButton:
         id: 'button_settings'
         text: "Settings"
+        on_text: "Confirm Alarm"
         font_size: 20
-        size_hint: .2, .2
-        pos_hint: {'x': 0, 'y': .8}
+        size_hint: .15, .15
+        pos_hint: {'x': 0, 'y': .85}
         on_state: root.click_settings(*args)
 
     ToggleButton:
         id: 'fullscreen_toggle'
-        opacity: self.parent.settings_view
+        opacity: 0
+        disabled: True
         text: 'Toggle Fullscreen'
         font_size: 10
         size_hint: .1, .1
@@ -50,8 +50,8 @@
     Switch:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
         font_size: 20
-        size_hint: .15, .15
-        pos_hint: {'x': .85, 'y': .82}        #
+        size_hint: .17, .17
+        pos_hint: {'x': .85, 'y': .83}        #
         background_color: 0, 0, 0 ,0
         on_active: root.switch_state(*args)
 
@@ -61,7 +61,7 @@
         text: "+"
         font_size: 15
         size_hint: .08, .12
-        pos_hint: {'x': .27, 'y': .6}
+        pos_hint: {'x': .24, 'y': .6}
         on_release:
             root.hour10_up()
 
@@ -71,7 +71,7 @@
         text: "+"
         font_size: 15
         size_hint: .08, .12
-        pos_hint: {'x': .38, 'y': .6}
+        pos_hint: {'x': .34, 'y': .6}
         on_release: root.hour1_up()
 
     Button:
@@ -80,7 +80,7 @@
         text: "+"
         font_size: 15
         size_hint: .08, .12
-        pos_hint: {'x': .54, 'y': .6}
+        pos_hint: {'x': .57, 'y': .6}
         on_release: root.min10_up()
 
     Button:
@@ -89,7 +89,7 @@
         text: "+"
         font_size: 10
         size_hint: .08, .12
-        pos_hint: {'x': .66, 'y': .6}
+        pos_hint: {'x': .67, 'y': .6}
         on_release: root.min1_up()
 
     Button:
@@ -98,7 +98,7 @@
         text: "-"
         font_size: 10
         size_hint: .08, .12
-        pos_hint: {'x': .27, 'y': .3}
+        pos_hint: {'x': .24, 'y': .28}
         on_release: root.hour10_dn()
 
     Button:
@@ -107,7 +107,7 @@
         text: "-"
         font_size: 10
         size_hint: .08, .12
-        pos_hint: {'x': .38, 'y': .3}
+        pos_hint: {'x': .34, 'y': .28}
         on_release: root.hour1_dn()
 
     Button:
@@ -116,7 +116,7 @@
         text: "-"
         font_size: 10
         size_hint: .08, .12
-        pos_hint: {'x': .54, 'y': .3}
+        pos_hint: {'x': .57, 'y': .28}
         on_release: root.min10_dn()
 
     Button:
@@ -125,14 +125,98 @@
         text: "-"
         font_size: 10
         size_hint: .08, .12
-        pos_hint: {'x': .66, 'y': .3}
+        pos_hint: {'x': .67, 'y': .28}
         on_release: root.min1_dn()
 
     Button:
         opacity: self.parent.is_alarming
         text: "SNOOZE"
         size_hint: .1, .12
-        pos_hint: {'x': .74, 'y': .35}
+        pos_hint: {'x': .8, 'y': .35}
         on_press: root.snooze_func()
 
+    Button:
+        opacity: self.parent.is_alarming
+        text: "CANCEL"
+        size_hint: .1, .12
+        pos_hint: {'x': .1, 'y': .35}
+        on_press: root.cancel_func()
+
+    Button:
+        id: 'sunday'
+        opacity: 1
+        text: "S"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .15, 'y': 0}
+        on_press: root.press_sunday(*args)
+        background_color: self.parent.set_sunday, 0, 0, self.parent.set_sunday
+
+    Button:
+        id: 'monday'
+        opacity: 1
+        text: "M"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .25, 'y': 0}
+        on_press: root.press_monday(*args)
+        background_color: self.parent.set_monday, 0, 0, self.parent.set_monday
+
+    Button:
+        id: 'tuesday'
+        opacity: 1
+        text: "T"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .35, 'y': 0}
+        on_press: root.press_tuesday(*args)
+        background_color: self.parent.set_tuesday, 0, 0, self.parent.set_tuesday
+
+    Button:
+        id: 'wednesday'
+        opacity: 1
+        text: "W"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .45, 'y': 0}
+        on_press: root.press_wednesday(*args)
+        background_color: self.parent.set_wednesday, 0, 0, self.parent.set_wednesday
+
+    Button:
+        id: 'thursday'
+        opacity: 1
+        text: "T"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .55, 'y': 0}
+        on_press: root.press_thursday(*args)
+        background_color: self.parent.set_thursday, 0, 0, self.parent.set_thursday
+
+    Button:
+        id: 'friday'
+        opacity: 1
+        text: "F"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .65, 'y': 0}
+        on_press: root.press_friday(*args)
+        background_color: self.parent.set_friday, 0, 0, self.parent.set_friday
+
+    Button:
+        id: 'saturday'
+        opacity: 1
+        text: "S"
+        font_size: 20
+        size_hint: .1, .12
+        pos_hint: {'x': .75, 'y': 0}
+        on_press: root.press_saturday(*args)
+        background_color: self.parent.set_saturday, 0, 0, self.parent.set_saturday
+
+    Label:
+        id: 'current_day'
+        opacity: 1
+        text: self.parent.curr_day_name
+        font_size: 60
+        size_hint: .1, .12
+        pos_hint: {'x': .45, 'y': .6}
 
