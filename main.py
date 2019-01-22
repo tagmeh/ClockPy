@@ -312,14 +312,17 @@ class DigitalClock(FloatLayout):
         Mifare().set_max_retries(5)
         uid = Mifare().scan_field()
         if uid:
+            print(uid)
             """Grab the entire output of the NFC mobule from the I2C channel."""
             self.nfc_read = Pn532_i2c().read_mifare().get_data() #Store it in our variable.
+            Pn532_i2c().reset_i2c()
             #print('nfc_read = ' + str(self.nfc_read))
         else:
             self.nfc_read = '' #empty out the array
+            Pn532_i2c().reset_i2c()
             #print('no tag found')
+        self.bus.close()
 
-    
 
 class DigitalClockApp(App):
     def build(self):
