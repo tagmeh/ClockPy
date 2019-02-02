@@ -38,7 +38,7 @@ I guess if this is an issue I'll just say to download the game and get the files
 
 
 
-***################### TO ENABLE RASPBIAN STRETH TO WORK WITH MY SCREEN #################***
+***################### TO ENABLE RASPBIAN STRETCH TO WORK WITH MY SCREEN #################***
 https://www.amazon.com/gp/product/B07FDYXPT7/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1  
 -- Add following 8 lines at the end of the file /both/config.txt in raspberry pi:   
 max_usb_current=1  
