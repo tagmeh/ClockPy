@@ -57,17 +57,18 @@ class DigitalClock(FloatLayout):
     def update(self, dt=0):
         self.display_time = time.strftime("%H : %M")
         self.schedule_update()
+        print(self.schedule_update())
 
     def schedule_update(self, dt=0):
         current_time = time.localtime()
         seconds = current_time[5]
-        secs_to_next_minute = 60 - seconds
+        secs_to_next_minute = (60 - seconds)
         self.curr_time = datetime.datetime.now()
         self.curr_day_name = self.curr_time.strftime("%A")
         if ((self.display_time == self.alarm_time) #If alarm time is equal to current time
         and (self.alarm_switch == 1) # and alarm switch is ON
         and (self.is_alarming == 0)):  # and system is currently not in alarm
-            if (str(datetime.datetime.today().isoweekday()) == "0" and self.set_sunday == '1' #checking current day of week against if it's enabled below
+            if (str(datetime.datetime.today().isoweekday()) == "7" and self.set_sunday == '1' #checking current day of week against if it's enabled below
             or str(datetime.datetime.today().isoweekday()) == "1" and self.set_monday == '1'
             or str(datetime.datetime.today().isoweekday()) == "2" and self.set_tuesday == '1'
             or str(datetime.datetime.today().isoweekday()) == "3" and self.set_wednesday == '1'
@@ -75,19 +76,23 @@ class DigitalClock(FloatLayout):
             or str(datetime.datetime.today().isoweekday()) == "5" and self.set_friday == '1'
             or str(datetime.datetime.today().isoweekday()) == "6" and self.set_saturday == '1'):
                 self.is_alarming = 1 #put system in alarm mode, this is probably reduntant by this point with as many unschedules and kills I have in the script
-                #print("!!ALARM!!")
+                print("!!ALARM!!")
                 Clock.schedule_once(self.update, secs_to_next_minute) #update again in 1 minute
                 self.schedule_alarm()
         else:
             Clock.schedule_once(self.update, secs_to_next_minute) #Just come check again in 1 minute
+            print(str(secs_to_next_minute), "seconds to next minute.")
+            print("alarm switch is", str(self.alarm_switch))
+            print("is alarming is", str(self.is_alarming))
+            print(str(datetime.datetime.today().isoweekday()), "day set =", self.set_sunday)
 
     #Making schedule_alarm its own function to also be called from multiple functions that run only once. Saves cycles from the loop scheduling itself once every second.
     def schedule_alarm(self, dt=0):
         self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
-        #print('schedule_alarm running')
+        print('schedule_alarm running')
 
     def alarm_loop(self, *args):
-        #print('alarm_loop running')
+        print('alarm_loop running')
         self.nfc_list() #Check for NFC tag on every run.
         if self.is_alarming == 1 and (self.alarm_switch == 1):
             if self.colour == 0:
@@ -107,25 +112,25 @@ class DigitalClock(FloatLayout):
                 if self.nfc_cap in str(self.nfc_read):  # Determine audio file path based on NFC read
                     self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
                     self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
-                    #print("Audio File: Cap - " + str(self.audio_file))
+                    print("Audio File: Cap - " + str(self.audio_file))
                     sound_file = pygame.mixer.Sound(str(self.audio_file)) #Load sound file into Pygame
-                    #print(pygame.mixer.Sound)
+                    print(pygame.mixer.Sound)
                     pygame.mixer.Sound.play(sound_file) # Play sound file
                 else:
                     if self.nfc_hulk in str(self.nfc_read): # Repeat from above, but for Hulk
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
                         self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
-                        #print("Audio File: HULK - " + str(self.audio_file))
+                        print("Audio File: HULK - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        #print(pygame.mixer.Sound)
+                        print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
                     else:
                         self.rando = random.randint(1, 2) # Default alarm sounds if no NFC tag is found that matches above
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/"
                         self.audio_file = (self.audio_path + str(self.rando) + ".wav")
-                        #print("Audio File: Default - " + str(self.audio_file))
+                        print("Audio File: Default - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        #print(pygame.mixer.Sound)
+                        print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
         else:
             self.is_alarming = 0 # Shouldn't need this, but doesn't hurt. Some redundant stuff from def switch_state
@@ -178,7 +183,7 @@ class DigitalClock(FloatLayout):
     def switch_state(self, *args): # Arm/disarm alarm
         if args[1] == True:
             self.alarm_switch = 1
-            #print("Alarm On: " + str(self.alarm_switch))
+            print("Alarm On: " + str(self.alarm_switch))
         else:
             self.alarm_switch = 0
             self.colour = 0
@@ -188,7 +193,7 @@ class DigitalClock(FloatLayout):
             Clock.unschedule(self.snooze)
             if pygame.mixer.get_busy() == True: #Cut off the audio.
                 pygame.mixer.stop()
-            #print("Alarm Off: " + str(self.alarm_switch))
+            print("Alarm Off: " + str(self.alarm_switch))
 
     def hour10_up(self): # I realized later when trying to add other features that I should've done everything in minutes and divide it out to get hours
         if self.settings_view == "1":
@@ -309,16 +314,16 @@ class DigitalClock(FloatLayout):
 
 
     def nfc_list(self):
-        Mifare().set_max_retries(5)
+        Mifare().set_max_retries(2)
         uid = Mifare().scan_field()
         if uid:
             print(uid)
             """Grab the entire output of the NFC mobule from the I2C channel."""
             self.nfc_read = Pn532_i2c().read_mifare().get_data() #Store it in our variable.
-            #print('nfc_read = ' + str(self.nfc_read))
+            print('nfc_read = ' + str(self.nfc_read))
         else:
             self.nfc_read = '' #empty out the array
-            #print('no tag found')
+            print('no tag found')
         Pn532_i2c().reset_i2c()
 
 
