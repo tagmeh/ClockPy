@@ -7,10 +7,16 @@ import time
 import datetime
 import random
 import pygame   # Needs Pygame installed
+import io
+import sys
+import builtins
+import traceback
+from functools import wraps
 from py532lib.i2c import *
 from py532lib.frame import *
 from py532lib.constants import *
 from py532lib.mifare import *
+from quick2wire.i2c import *
 from subprocess import check_output
 from kivy.app import App
 from kivy.clock import Clock
@@ -26,11 +32,11 @@ class DigitalClock(FloatLayout):
     alarm_time_minute = int(doc_text.split(" : ")[1])
     alarm_time = StringProperty(str(alarm_time_hour).zfill(2) + " : " + str(alarm_time_minute).zfill(2))
     clock_view = StringProperty("1")
-    settings_view = StringProperty("0")
+    settings_view = StringProperty("0")     # Variable for Kivy to use, Variables for Kivy need to be a string
     alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
-    alarm_active = NumericProperty(0)       # Initial Alarm Call
-    is_alarming = NumericProperty(0)        # Alarm Loop
-    set_sunday = StringProperty("0")
+    is_alarming = NumericProperty(0)        # Track when Alarm is Active
+    is_snoozing = NumericProperty(0)       # Track when in Snooze mode
+    set_sunday = StringProperty("0")        # Track what days the alarm is set to activate
     set_monday = StringProperty("0")
     set_tuesday = StringProperty("0")
     set_wednesday = StringProperty("0")
@@ -49,15 +55,15 @@ class DigitalClock(FloatLayout):
     curr_time = int
     curr_day_name = StringProperty('')
     alarm_event = ()
-    snooze = ()
     Pn532_i2c().SAMconfigure()
     pygame.init()
     
 
     def update(self, dt=0):
+        Clock.unschedule(self.update)    # attempt to fix memory leak
         self.display_time = time.strftime("%H : %M")
         self.schedule_update()
-        print(self.schedule_update())
+        #print('Scheduling Update ', self.schedule_update())
 
     def schedule_update(self, dt=0):
         current_time = time.localtime()
@@ -76,23 +82,19 @@ class DigitalClock(FloatLayout):
             or str(datetime.datetime.today().isoweekday()) == "5" and self.set_friday == '1'
             or str(datetime.datetime.today().isoweekday()) == "6" and self.set_saturday == '1'):
                 self.is_alarming = 1 #put system in alarm mode, this is probably reduntant by this point with as many unschedules and kills I have in the script
-                print("!!ALARM!!")
+                print("!!ALARM!!", current_time)
                 Clock.schedule_once(self.update, secs_to_next_minute) #update again in 1 minute
-                self.schedule_alarm()
+                self.alarm_loop()
+                #print('schedule_alarm running')
         else:
-            Clock.schedule_once(self.update, secs_to_next_minute) #Just come check again in 1 minute
-            print(str(secs_to_next_minute), "seconds to next minute.")
-            print("alarm switch is", str(self.alarm_switch))
-            print("is alarming is", str(self.is_alarming))
-            print(str(datetime.datetime.today().isoweekday()), "day set =", self.set_sunday)
+            Clock.schedule_once(self.update, secs_to_next_minute) #Update again in 1 minute
 
-    #Making schedule_alarm its own function to also be called from multiple functions that run only once. Saves cycles from the loop scheduling itself once every second.
-    def schedule_alarm(self, dt=0):
-        self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
-        print('schedule_alarm running')
 
     def alarm_loop(self, *args):
-        print('alarm_loop running')
+        Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
+        self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
+        #print('alarm_loop running')
+        self.is_snoozing = 0
         self.nfc_list() #Check for NFC tag on every run.
         if self.is_alarming == 1 and (self.alarm_switch == 1):
             if self.colour == 0:
@@ -112,44 +114,46 @@ class DigitalClock(FloatLayout):
                 if self.nfc_cap in str(self.nfc_read):  # Determine audio file path based on NFC read
                     self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
                     self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
-                    print("Audio File: Cap - " + str(self.audio_file))
+                    #print("Audio File: Cap - " + str(self.audio_file))
                     sound_file = pygame.mixer.Sound(str(self.audio_file)) #Load sound file into Pygame
-                    print(pygame.mixer.Sound)
+                    #print(pygame.mixer.Sound)
                     pygame.mixer.Sound.play(sound_file) # Play sound file
                 else:
                     if self.nfc_hulk in str(self.nfc_read): # Repeat from above, but for Hulk
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
                         self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
-                        print("Audio File: HULK - " + str(self.audio_file))
+                        #print("Audio File: HULK - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        print(pygame.mixer.Sound)
+                        #print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
                     else:
                         self.rando = random.randint(1, 2) # Default alarm sounds if no NFC tag is found that matches above
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/"
                         self.audio_file = (self.audio_path + str(self.rando) + ".wav")
-                        print("Audio File: Default - " + str(self.audio_file))
+                        #print("Audio File: Default - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
-                        print(pygame.mixer.Sound)
+                        #print(pygame.mixer.Sound)
                         pygame.mixer.Sound.play(sound_file)
         else:
             self.is_alarming = 0 # Shouldn't need this, but doesn't hurt. Some redundant stuff from def switch_state
             Clock.unschedule(self.alarm_event)
 
     def snooze_func(self, *args):
-        if (self.is_alarming == 1):
+        if ((self.is_alarming == 1)
+        and (self.is_snoozing == 0)):
+            print('snooze button pressed')
+            self.is_snoozing = 1
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
-            Clock.unschedule(self.snooze)           # unschedule any existing 4-minute Snooze timer, otherwise they stack on top of each other with every button press
-            self.snooze = Clock.schedule_once(self.schedule_alarm, 240) # schedule new 4-minute Snooze timer
+            self.alarm_event = Clock.schedule_once(self.alarm_loop, 300) # schedule new 5-minute Snooze timer
             self.colour = 0                         # Set background color to Black
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
 
     def cancel_func(self, *args):
         if (self.is_alarming == 1):
+            self.is_snoozing = 0
             self.is_alarming = 0
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
-            Clock.unschedule(self.snooze)           # unschedule any existing 4-minute Snooze timer, otherwise they stack on top of each other with every button press
             self.colour = 0                         # Set background color to Black
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
@@ -183,17 +187,16 @@ class DigitalClock(FloatLayout):
     def switch_state(self, *args): # Arm/disarm alarm
         if args[1] == True:
             self.alarm_switch = 1
-            print("Alarm On: " + str(self.alarm_switch))
+            #print("Alarm On: " + str(self.alarm_switch))
         else:
             self.alarm_switch = 0
             self.colour = 0
             self.is_alarming = 0
             Clock.unschedule(self.schedule_alarm) #Unschedule all alarm events, whether they're running or not.
             Clock.unschedule(self.alarm_event)
-            Clock.unschedule(self.snooze)
             if pygame.mixer.get_busy() == True: #Cut off the audio.
                 pygame.mixer.stop()
-            print("Alarm Off: " + str(self.alarm_switch))
+            #print("Alarm Off: " + str(self.alarm_switch))
 
     def hour10_up(self): # I realized later when trying to add other features that I should've done everything in minutes and divide it out to get hours
         if self.settings_view == "1":
