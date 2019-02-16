@@ -11,13 +11,11 @@ import io
 import sys
 import builtins
 import traceback
-from functools import wraps
 from py532lib.i2c import *
 from py532lib.frame import *
 from py532lib.constants import *
 from py532lib.mifare import *
 from quick2wire.i2c import *
-from subprocess import check_output
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, StringProperty, ObjectProperty
@@ -45,7 +43,10 @@ class DigitalClock(FloatLayout):
     set_saturday = StringProperty("0")
     nfc_read = ''   #Starting empty string for NFC tags
     nfc_cap = 'x04>' #returned ID Significant Byte for my Captain America figure
+    nfc_cap2 = 'xb9' #returned ID Significant Byte for my Captain America figure's sticker
     nfc_hulk = 'x04H' #returned ID Significant Byte for my Hulk figure
+    nfc_hulk2 = 'xcd'#returned ID Significant Byte for my Hulk figure's sticker
+    file_played = False
     rando = NumericProperty(0)
     section = NumericProperty(1)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
     play_num = NumericProperty(0)
@@ -57,10 +58,11 @@ class DigitalClock(FloatLayout):
     alarm_event = ()
     Pn532_i2c().SAMconfigure()
     pygame.init()
+    Mifare().set_max_retries(2)
     
 
     def update(self, dt=0):
-        Clock.unschedule(self.update)    # attempt to fix memory leak
+        Clock.unschedule(self.update)    # attempt to fix memory leak - Attempt Successful :)
         self.display_time = time.strftime("%H : %M")
         self.schedule_update()
         #print('Scheduling Update ', self.schedule_update())
@@ -82,7 +84,7 @@ class DigitalClock(FloatLayout):
             or str(datetime.datetime.today().isoweekday()) == "5" and self.set_friday == '1'
             or str(datetime.datetime.today().isoweekday()) == "6" and self.set_saturday == '1'):
                 self.is_alarming = 1 #put system in alarm mode, this is probably reduntant by this point with as many unschedules and kills I have in the script
-                print("!!ALARM!!", current_time)
+                print("!!ALARM!!", self.curr_time)
                 Clock.schedule_once(self.update, secs_to_next_minute) #update again in 1 minute
                 self.alarm_loop()
                 #print('schedule_alarm running')
@@ -95,7 +97,8 @@ class DigitalClock(FloatLayout):
         self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
         #print('alarm_loop running')
         self.is_snoozing = 0
-        self.nfc_list() #Check for NFC tag on every run.
+        if self.file_played == False:
+            self.nfc_list() #Check for NFC tag on alarm.
         if self.is_alarming == 1 and (self.alarm_switch == 1):
             if self.colour == 0:
                 self.colour = 1
@@ -111,20 +114,24 @@ class DigitalClock(FloatLayout):
                         self.section = 14
                     else:
                         self.section = 0
-                if self.nfc_cap in str(self.nfc_read):  # Determine audio file path based on NFC read
+                if (self.nfc_cap in str(self.nfc_read)  # Determine audio file path based on NFC read
+                or self.nfc_cap2 in str(self.nfc_read)):  # Determine audio file path based on NFC read
                     self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
                     self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
                     #print("Audio File: Cap - " + str(self.audio_file))
                     sound_file = pygame.mixer.Sound(str(self.audio_file)) #Load sound file into Pygame
                     #print(pygame.mixer.Sound)
+                    self.file_played = True
                     pygame.mixer.Sound.play(sound_file) # Play sound file
                 else:
-                    if self.nfc_hulk in str(self.nfc_read): # Repeat from above, but for Hulk
+                    if (self.nfc_hulk in str(self.nfc_read) # Determine audio file path based on NFC read
+                    or self.nfc_hulk2 in str(self.nfc_read)):# Determine audio file path based on NFC read
                         self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
                         self.audio_file = (self.audio_path + str(self.play_num) + ".ogg")
                         #print("Audio File: HULK - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
                         #print(pygame.mixer.Sound)
+                        self.file_played = True
                         pygame.mixer.Sound.play(sound_file)
                     else:
                         self.rando = random.randint(1, 2) # Default alarm sounds if no NFC tag is found that matches above
@@ -133,6 +140,7 @@ class DigitalClock(FloatLayout):
                         #print("Audio File: Default - " + str(self.audio_file))
                         sound_file = pygame.mixer.Sound(str(self.audio_file))
                         #print(pygame.mixer.Sound)
+                        self.file_played = True
                         pygame.mixer.Sound.play(sound_file)
         else:
             self.is_alarming = 0 # Shouldn't need this, but doesn't hurt. Some redundant stuff from def switch_state
@@ -146,6 +154,7 @@ class DigitalClock(FloatLayout):
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
             self.alarm_event = Clock.schedule_once(self.alarm_loop, 300) # schedule new 5-minute Snooze timer
             self.colour = 0                         # Set background color to Black
+            self.file_played = False                     # Reset NFC to try again for tag
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
 
@@ -155,6 +164,7 @@ class DigitalClock(FloatLayout):
             self.is_alarming = 0
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
             self.colour = 0                         # Set background color to Black
+            self.file_played = False                     # Reset NFC to try again for tag
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
 
@@ -187,16 +197,15 @@ class DigitalClock(FloatLayout):
     def switch_state(self, *args): # Arm/disarm alarm
         if args[1] == True:
             self.alarm_switch = 1
-            #print("Alarm On: " + str(self.alarm_switch))
         else:
-            self.alarm_switch = 0
-            self.colour = 0
-            self.is_alarming = 0
+            self.alarm_switch = 0                   # Toggle switch mode to "Off"
+            self.colour = 0                         # Set background to black
+            self.is_alarming = 0                    # Put clock in not-alarming mode
+            self.file_played = False                     # Reset NFC to try again for tag
             Clock.unschedule(self.schedule_alarm) #Unschedule all alarm events, whether they're running or not.
             Clock.unschedule(self.alarm_event)
             if pygame.mixer.get_busy() == True: #Cut off the audio.
                 pygame.mixer.stop()
-            #print("Alarm Off: " + str(self.alarm_switch))
 
     def hour10_up(self): # I realized later when trying to add other features that I should've done everything in minutes and divide it out to get hours
         if self.settings_view == "1":
@@ -317,17 +326,17 @@ class DigitalClock(FloatLayout):
 
 
     def nfc_list(self):
-        Mifare().set_max_retries(2)
-        uid = Mifare().scan_field()
-        if uid:
-            print(uid)
+        self.nfc_read = Mifare().scan_field()
+        if self.nfc_read:
+            pass
             """Grab the entire output of the NFC mobule from the I2C channel."""
-            self.nfc_read = Pn532_i2c().read_mifare().get_data() #Store it in our variable.
-            print('nfc_read = ' + str(self.nfc_read))
+            #print('Tag Found')
+            #print('nfc_read = ' + str(self.nfc_read))
         else:
-            self.nfc_read = '' #empty out the array
-            print('no tag found')
-        Pn532_i2c().reset_i2c()
+            pass
+            #print('no tag found')
+            #print('nfc_read = ' + str(self.nfc_read))
+        #print(self.curr_time)
 
 
 class DigitalClockApp(App):
