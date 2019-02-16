@@ -47,6 +47,8 @@ class DigitalClock(FloatLayout):
     nfc_hulk = 'x04H' #returned ID Significant Byte for my Hulk figure
     nfc_hulk2 = 'xcd'#returned ID Significant Byte for my Hulk figure's sticker
     file_played = False
+    hr_setting = StringProperty("0")
+    am_pm = ''
     rando = NumericProperty(0)
     section = NumericProperty(1)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
     play_num = NumericProperty(0)
@@ -59,7 +61,7 @@ class DigitalClock(FloatLayout):
     Pn532_i2c().SAMconfigure()
     pygame.init()
     Mifare().set_max_retries(2)
-    
+
 
     def update(self, dt=0):
         Clock.unschedule(self.update)    # attempt to fix memory leak - Attempt Successful :)
@@ -68,6 +70,7 @@ class DigitalClock(FloatLayout):
         #print('Scheduling Update ', self.schedule_update())
 
     def schedule_update(self, dt=0):
+        self.am_pm = time.strftime("%p")
         current_time = time.localtime()
         seconds = current_time[5]
         secs_to_next_minute = (60 - seconds)
@@ -84,7 +87,7 @@ class DigitalClock(FloatLayout):
             or str(datetime.datetime.today().isoweekday()) == "5" and self.set_friday == '1'
             or str(datetime.datetime.today().isoweekday()) == "6" and self.set_saturday == '1'):
                 self.is_alarming = 1 #put system in alarm mode, this is probably reduntant by this point with as many unschedules and kills I have in the script
-                print("!!ALARM!!", self.curr_time)
+                #print("!!ALARM!!", self.curr_time)
                 Clock.schedule_once(self.update, secs_to_next_minute) #update again in 1 minute
                 self.alarm_loop()
                 #print('schedule_alarm running')
@@ -149,7 +152,7 @@ class DigitalClock(FloatLayout):
     def snooze_func(self, *args):
         if ((self.is_alarming == 1)
         and (self.is_snoozing == 0)):
-            print('snooze button pressed')
+            #print('snooze button pressed')
             self.is_snoozing = 1
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
             self.alarm_event = Clock.schedule_once(self.alarm_loop, 300) # schedule new 5-minute Snooze timer
@@ -184,6 +187,15 @@ class DigitalClock(FloatLayout):
             #print(events)                           # Print out events to Console
             #self.schedule_update()  # Used for testing only - Comment out after
 
+    def click_12hr(self, *args):
+        if args[1] == 'down':
+            self.hr_setting = "1"
+            self.display_time = time.strftime("%I : %M")
+            self.am_pm = time.strftime("%p")
+        else:
+            self.hr_setting = "0"
+            self.display_time = time.strftime("%H : %M")
+
     def toggle_fullscreen(self, *args): #Used to test full screen view when developing on PC. Requires app restarted to take effect.
         if args[1] == 'down':
             Config.set('graphics', 'fullscreen', 'auto')  ####ENABLE FULLSCREEN#### 'auto'=fullscreen / '0'=not-fullscreen
@@ -217,7 +229,7 @@ class DigitalClock(FloatLayout):
 
     def hour1_up(self):
         if self.settings_view == "1":
-            if self.alarm_time_hour <= (23):
+            if self.alarm_time_hour <= (22):
                 self.alarm_time_hour = self.alarm_time_hour + 1
                 self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
             else:
@@ -255,7 +267,7 @@ class DigitalClock(FloatLayout):
                 self.alarm_time_hour = self.alarm_time_hour - 1
                 self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
             else:
-                self.alarm_time_hour = 24
+                self.alarm_time_hour = 23
                 self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
 
     def min10_dn(self):
@@ -326,17 +338,15 @@ class DigitalClock(FloatLayout):
 
 
     def nfc_list(self):
+        """Grab the entire output of the NFC mobule from the I2C channel."""
         self.nfc_read = Mifare().scan_field()
-        if self.nfc_read:
-            pass
-            """Grab the entire output of the NFC mobule from the I2C channel."""
-            #print('Tag Found')
-            #print('nfc_read = ' + str(self.nfc_read))
+        '''if self.nfc_read:
+            print('Tag Found')
+            print('nfc_read = ' + str(self.nfc_read))
         else:
-            pass
-            #print('no tag found')
-            #print('nfc_read = ' + str(self.nfc_read))
-        #print(self.curr_time)
+            print('no tag found')
+            print('nfc_read = ' + str(self.nfc_read))
+        print(self.curr_time)'''
 
 
 class DigitalClockApp(App):
@@ -350,4 +360,3 @@ class DigitalClockApp(App):
 if __name__ == '__main__':
 
     DigitalClockApp().run()
-    
