@@ -53,6 +53,7 @@
         size_hint: .17, .17
         pos_hint: {'x': .85, 'y': .83}        #
         background_color: 0, 0, 0 ,0
+        active: self.parent.alarm_switch
         on_active: root.switch_state(*args)
 
     Button:
