@@ -11,11 +11,8 @@ import io
 import sys
 import builtins
 import traceback
-from py532lib.i2c import *
-from py532lib.frame import *
-from py532lib.constants import *
-from py532lib.mifare import *
-from quick2wire.i2c import *
+import subprocess
+from subprocess import check_output
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, StringProperty, ObjectProperty
@@ -26,25 +23,26 @@ class DigitalClock(FloatLayout):
     display_time = StringProperty("00 : 00")
     alarm_saved = open('config.txt', 'r')
     doc_text = alarm_saved.read()
-    alarm_time_hour = int(doc_text.split(" : ")[0])
-    alarm_time_minute = int(doc_text.split(" : ")[1])
+    alarm_time_hour = int(doc_text.split(",")[0])
+    alarm_time_minute = int(doc_text.split(",")[1])
     alarm_time = StringProperty(str(alarm_time_hour).zfill(2) + " : " + str(alarm_time_minute).zfill(2))
     clock_view = StringProperty("1")
-    settings_view = StringProperty("0")     # Variable for Kivy to use, Variables for Kivy need to be a string
-    alarm_switch = NumericProperty(0)       # Alarm On/Off Switch
+    settings_view = StringProperty("0")     # Variable for Kivy to use
+    alarm_switch = StringProperty(doc_text.split(",")[9])# Alarm On/Off Switch
     is_alarming = NumericProperty(0)        # Track when Alarm is Active
     is_snoozing = NumericProperty(0)       # Track when in Snooze mode
-    set_sunday = StringProperty("0")        # Track what days the alarm is set to activate
-    set_monday = StringProperty("0")
-    set_tuesday = StringProperty("0")
-    set_wednesday = StringProperty("0")
-    set_thursday = StringProperty("0")
-    set_friday = StringProperty("0")
-    set_saturday = StringProperty("0")
+    set_sunday = StringProperty(doc_text.split(",")[2])
+    set_monday = StringProperty(doc_text.split(",")[3])
+    set_tuesday = StringProperty(doc_text.split(",")[4])
+    set_wednesday = StringProperty(doc_text.split(",")[5])
+    set_thursday = StringProperty(doc_text.split(",")[6])
+    set_friday = StringProperty(doc_text.split(",")[7])
+    set_saturday = StringProperty(doc_text.split(",")[8])
     nfc_read = ''   #Starting empty string for NFC tags
-    nfc_cap = 'x04>' #returned ID Significant Byte for my Captain America figure
+    nfc_checking = 0
+    nfc_cap = '3e' #returned ID Significant Byte for my Captain America figure
     nfc_cap2 = 'xb9' #returned ID Significant Byte for my Captain America figure's sticker
-    nfc_hulk = 'x04H' #returned ID Significant Byte for my Hulk figure
+    nfc_hulk = '48' #returned ID Significant Byte for my Hulk figure
     nfc_hulk2 = 'xcd'#returned ID Significant Byte for my Hulk figure's sticker
     file_played = False
     hr_setting = StringProperty("0")
@@ -58,9 +56,7 @@ class DigitalClock(FloatLayout):
     curr_time = int
     curr_day_name = StringProperty('')
     alarm_event = ()
-    Pn532_i2c().SAMconfigure()
     pygame.init()
-    Mifare().set_max_retries(2)
 
 
     def update(self, dt=0):
@@ -77,7 +73,7 @@ class DigitalClock(FloatLayout):
         self.curr_time = datetime.datetime.now()
         self.curr_day_name = self.curr_time.strftime("%A")
         if ((self.display_time == self.alarm_time) #If alarm time is equal to current time
-        and (self.alarm_switch == 1) # and alarm switch is ON
+        and (self.alarm_switch == '1') # and alarm switch is ON
         and (self.is_alarming == 0)):  # and system is currently not in alarm
             if (str(datetime.datetime.today().isoweekday()) == "7" and self.set_sunday == '1' #checking current day of week against if it's enabled below
             or str(datetime.datetime.today().isoweekday()) == "1" and self.set_monday == '1'
@@ -87,22 +83,23 @@ class DigitalClock(FloatLayout):
             or str(datetime.datetime.today().isoweekday()) == "5" and self.set_friday == '1'
             or str(datetime.datetime.today().isoweekday()) == "6" and self.set_saturday == '1'):
                 self.is_alarming = 1 #put system in alarm mode, this is probably reduntant by this point with as many unschedules and kills I have in the script
+                self.settings_view = "0"
+                self.clock_view = "1"
                 #print("!!ALARM!!", self.curr_time)
                 Clock.schedule_once(self.update, secs_to_next_minute) #update again in 1 minute
                 self.alarm_loop()
-                #print('schedule_alarm running')
         else:
             Clock.schedule_once(self.update, secs_to_next_minute) #Update again in 1 minute
 
 
     def alarm_loop(self, *args):
         Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
-        self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1)
+        self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1) #Reschedule for one second. Doing Clock.schduled_once in 1 second intervals had bad results.
         #print('alarm_loop running')
         self.is_snoozing = 0
         if self.file_played == False:
             self.nfc_list() #Check for NFC tag on alarm.
-        if self.is_alarming == 1 and (self.alarm_switch == 1):
+        if self.is_alarming == 1 and (self.alarm_switch == '1'):
             if self.colour == 0:
                 self.colour = 1
             else:
@@ -157,7 +154,7 @@ class DigitalClock(FloatLayout):
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
             self.alarm_event = Clock.schedule_once(self.alarm_loop, 300) # schedule new 5-minute Snooze timer
             self.colour = 0                         # Set background color to Black
-            self.file_played = False                     # Reset NFC to try again for tag
+            self.file_played = False                # Reset NFC to try again for tag
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
 
@@ -167,9 +164,16 @@ class DigitalClock(FloatLayout):
             self.is_alarming = 0
             Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
             self.colour = 0                         # Set background color to Black
-            self.file_played = False                     # Reset NFC to try again for tag
+            self.file_played = False                # Reset NFC to try again for tag
             if pygame.mixer.get_busy() == True:     # If sounds is currently playing
                 pygame.mixer.stop()                 # Stop currently playing sound
+
+    def switch_state(self, *args): # Arm/disarm alarm
+        if args[1] == True:
+            self.alarm_switch = str('1')
+        else:
+            self.alarm_switch = str('0')            # Toggle switch mode to "Off"
+            self.cancel_func()                      # Call function to stop alarming
 
     def click_settings(self, *args):
         if args[1] == 'down':
@@ -182,7 +186,8 @@ class DigitalClock(FloatLayout):
             self.settings_view = "0"
             self.clock_view = "1"
             config_file = open("config.txt", "w") # Open config.txt file in "Write" mode
-            config_file.write(self.alarm_time)    # Write the current alarm time into the file. This can be read later after the app or system reboots.
+            config_file.write(str(self.alarm_time_hour) + ',' + str(self.alarm_time_minute) + ',' + str(self.set_sunday) + ',' + str(self.set_monday) + ',' + str(self.set_tuesday) + ',' + str(self.set_wednesday) + ',' + str(self.set_thursday) + ',' + str(self.set_friday) + ',' + str(self.set_saturday) + ',' + str(self.alarm_switch))    # Write the current alarm time into the file. This can be read later after the app or system reboots.
+            config_file.close()
             #events = Clock.get_events()             # Grab currently scheduled events
             #print(events)                           # Print out events to Console
             #self.schedule_update()  # Used for testing only - Comment out after
@@ -205,19 +210,6 @@ class DigitalClock(FloatLayout):
             Config.set('graphics', 'fullscreen', '0')  ####ENABLE FULLSCREEN#### 'auto'=fullscreen / '0'=not-fullscreen
             Config.set('graphics', 'window_state', 'normal')  ###MAY NOT NEED THIS ONE###
             Config.write()
-
-    def switch_state(self, *args): # Arm/disarm alarm
-        if args[1] == True:
-            self.alarm_switch = 1
-        else:
-            self.alarm_switch = 0                   # Toggle switch mode to "Off"
-            self.colour = 0                         # Set background to black
-            self.is_alarming = 0                    # Put clock in not-alarming mode
-            self.file_played = False                     # Reset NFC to try again for tag
-            Clock.unschedule(self.schedule_alarm) #Unschedule all alarm events, whether they're running or not.
-            Clock.unschedule(self.alarm_event)
-            if pygame.mixer.get_busy() == True: #Cut off the audio.
-                pygame.mixer.stop()
 
     def hour10_up(self): # I realized later when trying to add other features that I should've done everything in minutes and divide it out to get hours
         if self.settings_view == "1":
@@ -338,15 +330,19 @@ class DigitalClock(FloatLayout):
 
 
     def nfc_list(self):
-        """Grab the entire output of the NFC mobule from the I2C channel."""
-        self.nfc_read = Mifare().scan_field()
-        '''if self.nfc_read:
-            print('Tag Found')
-            print('nfc_read = ' + str(self.nfc_read))
+        if ((self.nfc_checking == 0) #Allows only one instance of running the NFC check.
+        and (self.file_played == False)):
+            self.nfc_checking = 1
+            self.nfc_read = ''
+            """Grab the entire output of the NFC mobule from the I2C channel."""
+            try:    # Run the nfc-poll command and get its output
+                self.nfc_read = check_output('nfc-poll', universal_newlines=True) #universal_newlines just makes it easier to read if you decide to Print
+            except:
+                pass #If there's an error, just move along and try again.
+            self.nfc_checking = 0
         else:
-            print('no tag found')
-            print('nfc_read = ' + str(self.nfc_read))
-        print(self.curr_time)'''
+            pass
+
 
 
 class DigitalClockApp(App):
