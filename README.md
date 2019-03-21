@@ -8,7 +8,6 @@ https://www.raspberrypi.org/downloads/
 http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Raspberry_Pi    
 https://kivy.org/doc/stable/gettingstarted/installation.html  
 https://www.pygame.org/wiki/GettingStarted  
-https://github.com/HubCityLabs/py532lib
 
 
 ***My Personal Character UID Values***  
@@ -31,7 +30,7 @@ https://github.com/HubCityLabs/py532lib
 https://github.com/dwalker0044/KivyDigitalClock
 
 -- Credits to Marvel Heroes for the OGG sound files. (can someone check the legality on this for me? :/ It's a free game, and the files are readily available in the DL. 
-I guess if this is an issue I'll just say to download the game and get the files yourself if you want those specific characters.)
+I guess if this is an issue I'll just say to download the game and get the files yourself if you want those specific characters.) -- Welp, that game is dead.  I'll upload the files elsewhere if I need to.
 
 -- Credits to Soundbible for default alarm sounds - http://soundbible.com/tags-alarm-clock.html
 
