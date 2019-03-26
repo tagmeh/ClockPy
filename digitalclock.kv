@@ -17,6 +17,14 @@
         size_hint_y: 1
 
     Label:
+        id: "AM_PM_CLOCK"
+        opacity: self.parent.am_pm_clock
+        text: self.parent.am_pm_clock_text
+        font_size: 35
+        size_hint: .15, .15
+        pos_hint: {'x': .8, 'y': .45}
+
+    Label:
         id: 'alarm_time'
         opacity: self.parent.settings_view
         text: str(self.parent.alarm_time)
@@ -28,14 +36,33 @@
         font_size: 25
         pos_hint: {'x': .44, 'y': .47}
 
-    ToggleButton:
+    Button:
         id: 'button_settings'
         size_hint: .15, .2
         pos_hint: {'x': 0, 'y': .8}
-        on_state: root.click_settings(*args)
-        active: self.parent.settings_view
-        background_normal: "Settings_Normal.png"
-        background_down: "Settings_Pushed.png"
+        on_press: root.click_settings(*args)
+        background_normal: self.parent.settings_pic
+        background_down: self.parent.settings_pic
+
+    Button:
+        id: "12HR_24HR"
+        on_press: root.click_12hr(*args)
+        opacity: 1
+        size_hint: .15, .12
+        pos_hint: {'x': self.parent.clock_view + 0.85, 'y': .6}
+        text: self.parent.hr_text
+        font_size: 30
+        background_color: 0, self.parent.am_pm_setting, self.parent.hr_setting, self.parent.hr_setting
+
+    Button:
+        id: "AM_PM_ALARMTIME"
+        on_press: root.alarm_am_pm(*args)
+        opacity: 1
+        size_hint: .15, .15
+        pos_hint: {'x': self.parent.am_pm_alarm - 0.2, 'y': .45}
+        text: self.parent.am_pm_text
+        font_size: 35
+        background_color: 0, self.parent.am_pm_setting, self.parent.am_pm_setting, self.parent.am_pm_setting
 
     Button:
         opacity: self.parent.is_alarming
@@ -53,14 +80,15 @@
         pos_hint: {'x': .35, 'y': .85}
         on_press: root.snooze_func()
 
-    Switch:                                 #Alarm On/Off Switch
+    Button:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
         font_size: 20
-        size_hint: .17, .17
-        pos_hint: {'x': .85, 'y': .83}        #
-        background_color: 0, 0, 0 ,0
-        on_active: root.switch_state(*args)
-        active: self.parent.alarm_switch
+        size_hint: .15, .1
+        text: self.parent.switch_text
+        pos_hint: {'x': .85, 'y': .82}
+        background_normal: ''
+        background_color: self.parent.alarm_switch, 0, self.parent.alarm_switch ,1
+        on_press: root.switch_state()
 
     Button:
         name: 'hour10_up'
