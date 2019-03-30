@@ -31,11 +31,6 @@
         font_size: 140
         size_hint_y: 1
 
-    Label:
-        text: "Alarm"
-        font_size: 25
-        pos_hint: {'x': .44, 'y': .47}
-
     Button:
         id: 'button_settings'
         size_hint: .15, .2
@@ -52,7 +47,7 @@
         pos_hint: {'x': self.parent.clock_view + 0.85, 'y': .6}
         text: self.parent.hr_text
         font_size: 30
-        background_color: 0, self.parent.am_pm_setting, self.parent.hr_setting, self.parent.hr_setting
+        background_color: .2, .7, 1, self.parent.hr_setting
 
     Button:
         id: "AM_PM_ALARMTIME"
@@ -62,7 +57,7 @@
         pos_hint: {'x': self.parent.am_pm_alarm - 0.2, 'y': .45}
         text: self.parent.am_pm_text
         font_size: 35
-        background_color: 0, self.parent.am_pm_setting, self.parent.am_pm_setting, self.parent.am_pm_setting
+        background_color: 0, .5, self.parent.am_pm_setting, self.parent.am_pm_setting
 
     Button:
         opacity: self.parent.is_alarming
@@ -83,11 +78,11 @@
     Button:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
         font_size: 20
-        size_hint: .15, .1
+        size_hint: .15, .15
         text: self.parent.switch_text
-        pos_hint: {'x': .85, 'y': .82}
+        pos_hint: {'x': .85, 'y': .85}
         background_normal: ''
-        background_color: self.parent.alarm_switch, 0, self.parent.alarm_switch ,1
+        background_color: self.parent.alarm_switch, 0, 0, 1
         on_press: root.switch_state()
 
     Button:
