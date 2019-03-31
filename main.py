@@ -211,6 +211,7 @@ class DigitalClock(FloatLayout):
         Clock.unschedule(self.alarm_event)      # unschedule the 1 second loop that runs self.alarm_loop
         self.alarm_event = Clock.schedule_interval(self.alarm_loop, 1) #Reschedule for one second. Doing Clock.schduled_once in 1 second intervals had bad results.
         play_num = int(0)
+        file_type = str('')
         self.is_snoozing = 0
         self.am_pm_alarm = 0
         if self.file_locked == False:
@@ -224,17 +225,20 @@ class DigitalClock(FloatLayout):
                 rando = NumericProperty(0)
                 if self.audio_path == "/home/pi/Desktop/PyClock/Sounds/":
                     self.rando = random.randint(1, 2)
+                    self.file_type = '.wav'
+                    self.section = 0
                 else:
                     self.rando = random.randint(1, 7)   # Random number between 1 and 7, inclusive
-                self.play_num = (self.rando) + (self.section) # My files are split into 3 sections, 1-7, 8-14, 15-21 based on natural progression of intensity
-                if self.section == 0:   # Increment to next section every round
-                    self.section = 7
-                else:
-                    if self.section == 7:
-                        self.section = 14
+                    self.file_type = '.ogg'
+                    if self.section == 0:   # Increment to next section every round
+                        self.section = 7
                     else:
-                        self.section = 0
-                self.audio_file = str(self.audio_path + str(self.play_num) + ".ogg")
+                        if self.section == 7:
+                            self.section = 14
+                        else:
+                            self.section = 0
+                self.play_num = (self.rando) + (self.section) # My files are split into 3 sections, 1-7, 8-14, 15-21 based on natural progression of intensity
+                self.audio_file = str(self.audio_path + str(self.play_num) + self.file_type)
                 self.sound_file = pygame.mixer.Sound(str(self.audio_file)) #Load sound file into Pygame
                 pygame.mixer.Sound.play(self.sound_file) # Play sound file
         else:
@@ -507,25 +511,21 @@ class DigitalClock(FloatLayout):
             """Grab the entire output of the NFC mobule from the I2C channel."""
             try:    # Run the nfc-poll command and get its output
                 self.nfc_read = check_output('nfc-poll', universal_newlines=True) #universal_newlines just makes it easier to read if you decide to Print
-                if (self.nfc_cap in str(self.nfc_read)  # Determine audio file path based on NFC read
-                or self.nfc_cap2 in str(self.nfc_read)):
-                    self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
-                    self.file_locked = True
-                else:
-                    if (self.nfc_hulk in str(self.nfc_read) # Determine audio file path based on NFC read
-                    or self.nfc_hulk2 in str(self.nfc_read)):
-                        self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
-                        self.file_locked = True
-                    else:
-                        self.audio_path = "/home/pi/Desktop/PyClock/Sounds/" # Default alarm sounds if no NFC tag is found that matches above
-                        self.file_locked = True
             except:
                 pass #If there's an error, just move along and try again.
             self.nfc_checking = 0
-        else:
-            pass
-
-
+            if (self.nfc_cap in str(self.nfc_read)  # Determine audio file path based on NFC read
+            or self.nfc_cap2 in str(self.nfc_read)):
+                self.audio_path = "/home/pi/Desktop/PyClock/Sounds/01-CaptainAmerica/"
+                self.file_locked = True
+            else:
+                if (self.nfc_hulk in str(self.nfc_read) # Determine audio file path based on NFC read
+                or self.nfc_hulk2 in str(self.nfc_read)):
+                    self.audio_path = "/home/pi/Desktop/PyClock/Sounds/02-Hulk/"
+                    self.file_locked = True
+                else:
+                    self.audio_path = "/home/pi/Desktop/PyClock/Sounds/" # Default alarm sounds if no NFC tag is found that matches above
+                    self.file_locked = True
 
 class DigitalClockApp(App):
     def build(self):
