@@ -1,3 +1,5 @@
+----- VERSION 1.0 is now live!!! -----  
+
 PyClock  
 Python Alarm Clock using Kivy UIX
 
