@@ -5,7 +5,7 @@ Python Alarm Clock using Kivy UIX
 
 ====================
 
-Requirements: Raspian Stretch, python(seems to work in 2 & 3),libNFC, Kivy 1.10.1, pygame      
+Requirements: Raspian Stretch, python(seems to work in 2 & 3, but I've done all my testing in 3),libNFC, Kivy 1.10.1, pygame      
 https://www.raspberrypi.org/downloads/  
 libnfc - http://nfc-tools.org/index.php/Libnfc    
 I use [these modules](https://www.amazon.com/HiLetgo-Communication-Arduino-Raspberry-Android/dp/B01I1J17LC/ref=sr_1_1_sspa?keywords=pn532&qid=1554041310&s=gateway&sr=8-1-spons&psc=1)    
@@ -13,24 +13,16 @@ Helpful Tips - http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Ra
 https://kivy.org/doc/stable/gettingstarted/installation.html  
 https://www.pygame.org/wiki/GettingStarted  
 
+***################### TO ALLOW THE SYSTEM TO SERVE AS A UPNP RENDERER #################***   
+ Install this: https://github.com/hzeller/gmrender-resurrect/blob/master/INSTALL.md    
+
 
 
 ***My example directory***  
 *** /home/pi/Desktop/PyClock/ ***
-
-***Character UID Values Examples***  
-// Folder 1 = Captain America 	- x01\x01\x00D\x00\x07\x04>   
--- SigByte -                    - X04>    
-// Folder 2 = Hulk 				- x01\x01\x00D\x00\x07\x04H  
--- SigByte -					- x04H   
-// Folder 3 = Ultron 			- x01\x01\x00D\x00\x07\x04C (No Audio Files Yet)  
--- SigByte -					- x04C  
-// Folder 4 = Baloo 			- x01\x01\x00D\x00\x07\x043 (No Audio Files Yet)  
--- SigByte -				    - x043  
-// Folder 5 = Zeb Orrelios  	-   
--- SigByte -					-   
-// Folder 6 = Green Goblin 		- x01\x01\x00D\x00\x07\x04(  (No Audio Files Yet)  
--- SigByte -					- x04(   
+    
+***To Get Character UIDs, Read Them With A Smartphone App***  
+Example: https://play.google.com/store/apps/details?id=com.wakdev.wdnfc&hl=en_US    
 
 
 
@@ -94,4 +86,8 @@ ctl.!default {
     type hw           
     card 0
 }
-```
+```  
+  
+  
+  
+  
