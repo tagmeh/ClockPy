@@ -7,7 +7,8 @@ Python Alarm Clock using Kivy UIX
 
 Requirements: Raspian Stretch, python(seems to work in 2 & 3, but I've done all my testing in 3),libNFC, Kivy 1.10.1, pygame      
 https://www.raspberrypi.org/downloads/  
-libnfc - http://nfc-tools.org/index.php/Libnfc    
+Easier with GIT - `sudo apt-get install git`   
+libnfc - http://nfc-tools.org/index.php/Libnfc - `git clone https://github.com/nfc-tools/libnfc.git`
 I use [these modules](https://www.amazon.com/HiLetgo-Communication-Arduino-Raspberry-Android/dp/B01I1J17LC/ref=sr_1_1_sspa?keywords=pn532&qid=1554041310&s=gateway&sr=8-1-spons&psc=1)    
 Helpful Tips - http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Raspberry_Pi    
 https://kivy.org/doc/stable/gettingstarted/installation.html  
