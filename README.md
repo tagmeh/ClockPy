@@ -5,11 +5,15 @@ Python Alarm Clock using Kivy UIX
 
 ====================
 
-Requirements: Raspian Stretch, python(seems to work in 2 & 3, but I've done all my testing in 3),libNFC, Kivy 1.10.1, pygame   
+Requirements: Raspian Stretch, python(seems to work in 2 & 3, but I've done all my testing in 3),libNFC, Kivy 1.10.1 (& pip), pygame   
 
 RASPBIAN    
 https://www.raspberrypi.org/downloads/  
 Easier with GIT - `sudo apt-get install git`   
+
+PIP    
+sudo apt-get update    
+sudo apt-get install python-pip    
 
 LIBNFC    
 libnfc - http://nfc-tools.org/index.php/Libnfc - `git clone https://github.com/nfc-tools/libnfc.git`
