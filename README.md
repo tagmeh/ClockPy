@@ -14,6 +14,7 @@ Easier with GIT - `sudo apt-get install git`
 PIP    
 sudo apt-get update    
 sudo apt-get install python-pip    
+sudo apt-get install python3-pip    
 
 LIBNFC    
 libnfc - http://nfc-tools.org/index.php/Libnfc - `git clone https://github.com/Budlyte/libnfc.git`
