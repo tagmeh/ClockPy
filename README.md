@@ -22,8 +22,8 @@ Helpful Tips - http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Ra
 https://blog.stigok.com/2017/10/12/setting-up-a-pn532-nfc-module-on-a-raspberry-pi-using-i2c.html    
 
 KIVY    
-http://github.com/Budlyte/kivy    
-https://kivy.org/doc/stable/gettingstarted/installation.html  
+git clone http://github.com/kivy/kivy   
+https://kivy.org/doc/stable/installation/installation-rpi.html  
 
 PYGAME    
 https://www.pygame.org/wiki/GettingStarted  
