@@ -16,7 +16,7 @@ sudo apt-get update
 sudo apt-get install python-pip    
 
 LIBNFC    
-libnfc - http://nfc-tools.org/index.php/Libnfc - `git clone https://github.com/nfc-tools/libnfc.git`
+libnfc - http://nfc-tools.org/index.php/Libnfc - `git clone https://github.com/Budlyte/libnfc.git`
 I use [these modules](https://www.amazon.com/HiLetgo-Communication-Arduino-Raspberry-Android/dp/B01I1J17LC/ref=sr_1_1_sspa?keywords=pn532&qid=1554041310&s=gateway&sr=8-1-spons&psc=1)    
 Helpful Tips - http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Raspberry_Pi    
 https://blog.stigok.com/2017/10/12/setting-up-a-pn532-nfc-module-on-a-raspberry-pi-using-i2c.html    
