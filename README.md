@@ -57,7 +57,7 @@ I guess if this is an issue I'll just say to download the game and get the files
 
 ***################### TO ENABLE RASPBIAN STRETH TO WORK WITH MY SCREEN #################***
 
--- Add following 8 lines at the end of the file /both/config.txt in raspberry pi:   
+-- Add following 8 lines at the end of the file /boot/config.txt in raspberry pi:   
 max_usb_current=1  
 hdmi_force_hotplug=1  
 config_hdmi_boost=7  
