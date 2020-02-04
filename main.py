@@ -205,7 +205,9 @@ class DigitalClock(FloatLayout):
 		self.settings_view = 0
 		self.clock_view = 1
 		self.button_state = "normal"
+		print ("setting volume")
 		os.system ("amixer sset 'Speaker' 100%")
+		print ("volume set")
 		Clock.schedule_once(self.update, self.secs_to_next_minute) #update again in 1 minute
 		self.alarm_loop()
 
