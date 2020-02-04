@@ -40,7 +40,7 @@ class DigitalClock(FloatLayout):
 	set_friday = StringProperty('0')
 	set_saturday = StringProperty('0')
 	alarm_switch = NumericProperty(0)
-	switch_text = StringProperty('ALARM OFF')
+	switch_text = StringProperty('OFF')
 	hr_setting = NumericProperty(0)
 	hr_text = StringProperty('24HR')
 	am_pm_clock = NumericProperty(0)
@@ -48,9 +48,9 @@ class DigitalClock(FloatLayout):
 	am_pm_setting = NumericProperty('0')
 	am_pm_text = StringProperty('AM')
 	nfc_cap = str('3e')
-	nfc_cap2 = str('xb9')
+	nfc_cap2 = str('4>')
 	nfc_hulk = str('48')
-	nfc_hulk2 = str('48')
+	nfc_hulk2 = str('4H')
 	nfc_locked = False
 	colour = NumericProperty(0)
 	curr_time = int
@@ -61,7 +61,7 @@ class DigitalClock(FloatLayout):
 	section = int(0)            # Section of audio files to use 1=1-7, 2=8-14, 3=15-21
 	audio_path = str('')
 	audio = int(0)
-	curr_vol = NumericProperty(0)
+	curr_vol = NumericProperty(50)
 	label_vol = StringProperty('0%')
 	pygame.init()
 
@@ -159,7 +159,8 @@ class DigitalClock(FloatLayout):
 			config_mod = True
 		if config_mod == True:
 			self.save_config()
-		subprocess.Popen(['gmediarender', '--gstout-audiosink=alsasink'])
+		os.system ("amixer sset 'Speaker' " + str(self.curr_vol) + "%")
+		#subprocess.Popen(['gmediarender', '--gstout-audiosink=alsasink'])
 		self.update()
 
 	def update(self, dt=0):
@@ -195,10 +196,10 @@ class DigitalClock(FloatLayout):
 					if (self.hr_setting == 0):
 						self.alarm_start()
 		else:
-			chirp = pygame.mixer.Sound("/home/pi/Desktop/PyClock/Sounds/chirp.wav")
-			chirp.set_volume(1)
-			volume = chirp.get_volume()
-			chirp.play()
+			#chirp = pygame.mixer.Sound("/home/pi/Desktop/PyClock/Sounds/chirp.wav")
+			#chirp.set_volume(1)
+			#volume = chirp.get_volume()
+			#chirp.play()
 			self.secs_to_next_minute = (60 - seconds)
 			Clock.schedule_once(self.update, self.secs_to_next_minute) #Update again in 1 minute
 
@@ -208,6 +209,7 @@ class DigitalClock(FloatLayout):
 		self.settings_view = 0
 		self.clock_view = 1
 		self.button_state = "normal"
+		os.system ("amixer sset 'Speaker' 100%")
 		Clock.schedule_once(self.update, self.secs_to_next_minute) #update again in 1 minute
 		self.alarm_loop()
 
@@ -217,6 +219,7 @@ class DigitalClock(FloatLayout):
 		play_num = int(0)
 		file_type = str('')
 		nfc_read = str()
+		self.settings_view = 0
 		self.is_snoozing = 0
 		self.am_pm_alarm = 0
 		if self.nfc_locked == False:
@@ -292,19 +295,21 @@ class DigitalClock(FloatLayout):
 			self.section = 0
 			self.colour = 0                         # Set background color to Black
 			self.nfc_locked = False                # Reset NFC to try again for tag
+			os.system ("amixer sset 'Speaker' " + str(self.curr_vol) + "%")
 			if pygame.mixer.get_busy() == True:     # If sounds is currently playing
 				pygame.mixer.stop()                 # Stop currently playing sound
 
 	def switch_state(self, *args): # Arm/disarm alarm
-		if self.alarm_switch == 0:
-			self.alarm_switch = 1
-			self.switch_text = "ALARM ON"
-		else:
-			self.alarm_switch = 0            # Toggle switch mode to "Off"
-			self.switch_text = "ALARM OFF"
-			if (self.is_alarming == 1):
-				self.cancel_func()                      # Call function to stop alarming
-		self.save_config()
+		if self.settings_view == 1:
+			if self.alarm_switch == 0:
+				self.alarm_switch = 1
+				self.switch_text = "ALARM ON"
+			else:
+				self.alarm_switch = 0            # Toggle switch mode to "Off"
+				self.switch_text = "ALARM OFF"
+				if (self.is_alarming == 1):
+					self.cancel_func()                      # Call function to stop alarming
+			self.save_config()
 
 	def click_settings(self, *args):
 		if self.settings_view == 0:
@@ -326,14 +331,6 @@ class DigitalClock(FloatLayout):
 			else:
 				self.am_pm_clock = 0
 			self.save_config()
-
-	''' Considered volume buttons for streaming audio, but phone does it itself.
-	def volume_up(self, *args):
-		if self.settings_view == 1:
-			#self.curr_vol = self.curr_vol + 10
-			self.curr_vol = check_output('amixer scontents', universal_newlines=True, shell=True)
-			print (str(self.curr_vol))
-			self.label_vol = str(self.curr_vol) + '%'''
 
 	def click_12hr(self, *args):
 		if self.settings_view == 1:
@@ -537,6 +534,11 @@ class DigitalClock(FloatLayout):
 		else:
 			if self.set_saturday == '1' and self.settings_view == 1:
 				self.set_saturday = '0'
+
+	def vol_change(self, value):
+		self.curr_vol = value
+		os.system ("amixer sset 'Speaker' " + str(self.curr_vol) + "%")
+
 
 class DigitalClockApp(App):
 	def build(self):
