@@ -196,10 +196,6 @@ class DigitalClock(FloatLayout):
 					if (self.hr_setting == 0):
 						self.alarm_start()
 		else:
-			#chirp = pygame.mixer.Sound("/home/pi/Desktop/PyClock/Sounds/chirp.wav")
-			#chirp.set_volume(1)
-			#volume = chirp.get_volume()
-			#chirp.play()
 			self.secs_to_next_minute = (60 - seconds)
 			Clock.schedule_once(self.update, self.secs_to_next_minute) #Update again in 1 minute
 
