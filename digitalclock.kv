@@ -31,6 +31,11 @@
         font_size: 140
         size_hint_y: 1
 
+    #Label:
+    #    text: "Alarm"
+    #    font_size: 25
+    #    pos_hint: {'x': .42, 'y': .47}
+
     Button:
         id: 'button_settings'
         size_hint: .15, .2
@@ -39,12 +44,18 @@
         background_normal: self.parent.settings_pic
         background_down: self.parent.settings_pic
 
+    Label:
+    	text: "Time Format"
+    	size_hint: .15, .12
+    	pos_hint: {'x': self.parent.clock_view + .015, 'y': .6}
+    	font_size: 25
+
     Button:
         id: "12HR_24HR"
         on_press: root.click_12hr(*args)
         opacity: 1
         size_hint: .15, .12
-        pos_hint: {'x': self.parent.clock_view + 0.85, 'y': .6}
+        pos_hint: {'x': self.parent.clock_view, 'y': .5}
         text: self.parent.hr_text
         font_size: 30
         background_color: .2, .7, 1, self.parent.hr_setting
@@ -78,11 +89,11 @@
     Button:                                 #Alarm On/Off Switch
         id: 'button_active'                 #
         font_size: 20
-        size_hint: .15, .15
+        size_hint: .15, .1
         text: self.parent.switch_text
-        pos_hint: {'x': .85, 'y': .85}
+        pos_hint: {'x': .85, 'y': .9}
         background_normal: ''
-        background_color: self.parent.alarm_switch, 0, 0, 1
+        background_color: self.parent.alarm_switch, 0, 0 ,1
         on_press: root.switch_state()
 
     Button:
@@ -235,3 +246,22 @@
         font_size: 60
         size_hint: .1, .12
         pos_hint: {'x': .45, 'y': .12}
+
+    Slider:
+        id: slider
+        min: 0
+        max: 100
+        step: 1
+        size_hint: .4, .1
+        pos_hint: {'x': .3, 'y':self.parent.clock_view + .85}
+        value: self.parent.curr_vol
+        on_touch_up: root.vol_change(self.value)
+
+    Label:
+    	id: volume
+        opacity: 1
+        text: "Volume"
+        font_size: 20
+        size_hint: .4, .12
+        pos_hint: {'x': .3, 'y':self.parent.clock_view + .9}
+
