@@ -1,12 +1,8 @@
-#!/usr/bin/python3
-
 import os
-os.putenv('SDL_AUDIODRIVER', 'alsa')
-os.putenv('SDL_AUDIODEV', '/dev/audio')
 import time
 import datetime
 import random
-import pygame   # Needs Pygame installed
+import pygame
 import io
 import sys
 import builtins
@@ -19,6 +15,9 @@ from kivy.clock import Clock
 from kivy.properties import NumericProperty, StringProperty, ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
+
+os.putenv('SDL_AUDIODRIVER', 'alsa')
+os.putenv('SDL_AUDIODEV', '/dev/audio')
 
 class DigitalClock(FloatLayout):
 	secs_to_next_minute = int(0)
