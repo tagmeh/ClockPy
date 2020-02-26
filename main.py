@@ -19,6 +19,7 @@ from kivy.config import Config
 os.putenv('SDL_AUDIODRIVER', 'alsa')
 os.putenv('SDL_AUDIODEV', '/dev/audio')
 
+
 class DigitalClock(FloatLayout):
 	secs_to_next_minute = int(0)
 	display_time = StringProperty("00 : 00")
@@ -80,6 +81,19 @@ class DigitalClock(FloatLayout):
 			config_mod = True
 		finally:
 			self.alarm_time = (str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2))
+
+		alarm_days_array = []
+		for day in config['Alarm Days']:
+			if config['Alarm Days'][day] == 1:  # Alarm is active on this day
+				alarm_days_array.append(day)  # todo: Maybe rename the config variables?
+											  # Todo: maybe use datetime objects to identify what day today is
+
+		# To access the above information:
+		# for day in alarm_days_array:
+			# if day == 1:
+				# make_annoying_noise()
+
+
 		try:
 			self.set_sunday = (config['Alarm Days']['set_sunday'])
 		except:
