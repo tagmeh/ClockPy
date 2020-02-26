@@ -68,7 +68,7 @@ class DigitalClock(FloatLayout):
 	def startup(self):
 		config_mod = False
 		config = configparser.ConfigParser()
-		if not os.path.exists('config.ini'):
+		if not os.path.exists('config.ini'):  #todo: Refactor to use "with open('filename', 'w+') as f:. The + creates the file if it doesn't exist already.
 			write_file()
 		config.read('config.ini')
 		try:
