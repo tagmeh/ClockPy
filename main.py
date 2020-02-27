@@ -16,6 +16,9 @@ from kivy.properties import NumericProperty, StringProperty, ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
 
+from lib import constants
+from lib import utils
+
 os.putenv('SDL_AUDIODRIVER', 'alsa')
 os.putenv('SDL_AUDIODEV', '/dev/audio')
 
@@ -67,10 +70,13 @@ class DigitalClock(FloatLayout):
 
 	def startup(self):
 		config_mod = False
+
+		if not os.path.exists(os.path.join(constants.FILES, 'config.ini')):
+			utils.create_default_config_file()
+
 		config = configparser.ConfigParser()
-		if not os.path.exists('config.ini'):  #todo: Refactor to use "with open('filename', 'w+') as f:. The + creates the file if it doesn't exist already.
-			write_file()
 		config.read('config.ini')
+
 		try:
 			self.alarm_time_hour = int(config['Alarm Time']['alarm_time_hour'])
 		except:
