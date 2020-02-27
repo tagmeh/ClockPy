@@ -130,4 +130,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/config.ini
+/files/config.ini
+/tests
+# temp, while going through program
+config.ini
