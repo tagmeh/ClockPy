@@ -172,7 +172,7 @@ class DigitalClock(FloatLayout):
 			config_mod = True
 		if config_mod == True:
 			self.save_config()
-		os.system ("amixer sset 'Speaker' " + str(self.curr_vol) + "%")
+		os.system("amixer sset 'Speaker' " + str(self.curr_vol) + "%")
 		#subprocess.Popen(['gmediarender', '--gstout-audiosink=alsasink'])
 		self.update()
 
