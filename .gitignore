@@ -131,6 +131,5 @@ dmypy.json
 .pyre/
 
 /files/config.ini
-/tests
 # temp, while going through program
 config.ini
