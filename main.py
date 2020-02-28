@@ -376,20 +376,16 @@ class DigitalClock(FloatLayout):
 
 	def hour1_up(self):
 		if self.settings_view == 1:
-			if self.hr_setting == 0:
-				if self.alarm_time_hour <= (22):
-					self.alarm_time_hour = self.alarm_time_hour + 1
-					self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
-				else:
-					self.alarm_time_hour = 0
-					self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
-			else:
-				if self.alarm_time_hour < (12):
-					self.alarm_time_hour = self.alarm_time_hour + 1
-					self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
-				else:
-					self.alarm_time_hour = 1
-					self.alarm_time = str(self.alarm_time_hour).zfill(2) + " : " + str(self.alarm_time_minute).zfill(2)
+
+			# The insane one-liner
+			# self.alarm_time = datetime.datetime.strptime(self.alarm_time, '%H : %M').replace(hour=(datetime.datetime.strptime(self.alarm_time, '%H : %M') + datetime.timedelta(hours=1)).hour).strftime('%H : %M')
+
+			# Convert string time into datetime object
+			alarm_time = datetime.datetime.strptime(self.alarm_time, '%H : %M')
+			# Add one hour to the datetime object
+			hour = (alarm_time + datetime.timedelta(hours=1)).hour
+			# Return the datetime object as a "HH : MM" formatted string
+			self.alarm_time = alarm_time.replace(hour=hour).strftime('%H : %M')
 
 	def min10_up(self):
 		if self.settings_view == 1:
