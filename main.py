@@ -376,10 +376,6 @@ class DigitalClock(FloatLayout):
 
 	def hour1_up(self):
 		if self.settings_view == 1:
-
-			# The insane one-liner
-			# self.alarm_time = datetime.datetime.strptime(self.alarm_time, '%H : %M').replace(hour=(datetime.datetime.strptime(self.alarm_time, '%H : %M') + datetime.timedelta(hours=1)).hour).strftime('%H : %M')
-
 			# Convert string time into datetime object
 			alarm_time = datetime.datetime.strptime(self.alarm_time, '%H : %M')
 			# Add one hour to the datetime object
